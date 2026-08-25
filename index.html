@@ -3,14 +3,21 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#010010" />
+<meta name="theme-color" content="#00C805" />
 <title>STOCKBROKERCITY // SBCITY</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
 <style>
 /* ── RESET ── */
 *,::before,::after{box-sizing:border-box;margin:0;padding:0}
-body,html{min-height:100%;background:#010010;color:#f7f6f8;font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Consolas,monospace;font-size:10px;font-weight:600;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html,body{min-height:100%}
+body{
+  font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
+  font-size:15px;font-weight:500;
+  color:#fffdf5;background:#00C805;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+}
 a{color:inherit;text-decoration:none}
 input,button{font:inherit;color:inherit;background:0 0;border:0;outline:0}
 button{cursor:pointer}
@@ -18,305 +25,407 @@ img{display:block;max-width:100%}
 
 /* ── CSS VARS ── */
 :root{
-  --ink:#010010;
-  --bed:#0a1230;
-  --line:#121933;
-  --line-hot:#16204a;
-  --blue:#0052ec;
-  --cyan:#01b3fe;
+  --gh:#00C805;            /* robinhood green sky top */
+  --gm:#4ADE80;            /* green sky mid */
+  --gl:#B8F5C9;            /* green sky low */
+  --ink:#0b0e11;           /* deep black chrome */
+  --panel:rgba(11,14,17,.86);
+  --panel-soft:rgba(24,26,32,.72);
+  --line:rgba(255,253,245,.14);
+  --line-hot:rgba(196,242,38,.55);
+  --acid:#c4f226;          /* stockcity acid lime */
+  --acid-hi:#d9ff4d;
   --green:#00C805;
-  --mint:#4ADE80;
-  --paper:#f7f6f8;
-  --muted:#5b6b94;
-  --amber:#ffb454;
-  --red:#ff8d8d;
+  --paper:#fffdf5;
+  --muted:#98a1ae;
+  --cyan:#22d3ee;
+  --amber:#ffc233;
+  --red:#f6465d;
   --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
-  --font-display:VT323,var(--font-mono);
+  --font-px:"Press Start 2P",var(--font-mono);
+  --font-num:VT323,var(--font-mono);
+}
+
+/* ── CITY SKY BACKDROP (fixed, like stockcity.app) ── */
+.city-sky{
+  position:fixed;inset:0;z-index:0;overflow:hidden;
+  background:
+    radial-gradient(120% 60% at 78% 8%, rgba(255,255,255,.35), transparent 42%),
+    linear-gradient(180deg, var(--gh) 0%, var(--gm) 52%, var(--gl) 100%);
+}
+.sun{
+  position:absolute;top:7%;right:12%;width:min(18vw,170px);aspect-ratio:1;
+  border-radius:50%;
+  background:radial-gradient(circle at 42% 38%, #fffdf5 0%, #f4ffe0 34%, #e6ffb0 62%, rgba(230,255,176,0) 74%);
+  filter:drop-shadow(0 0 42px rgba(255,255,255,.55));
+  animation:sun-breathe 6s ease-in-out infinite;
+}
+@keyframes sun-breathe{0%,100%{transform:scale(1);opacity:.95}50%{transform:scale(1.04);opacity:1}}
+.cloud{
+  position:absolute;height:26px;border-radius:999px;opacity:.85;
+  background:linear-gradient(180deg,#ffffff, #e8ffe9);
+  filter:blur(1px);
+  animation:drift linear infinite;
+}
+.cloud::before,.cloud::after{
+  content:"";position:absolute;background:inherit;border-radius:999px;
+}
+.cloud::before{width:56%;height:170%;top:-60%;left:12%}
+.cloud::after{width:38%;height:130%;top:-40%;right:8%}
+.c1{top:16%;left:-14%;width:170px;animation-duration:64s}
+.c2{top:30%;left:-20%;width:120px;animation-duration:88s;opacity:.6}
+.c3{top:9%;left:-30%;width:210px;animation-duration:52s;opacity:.7}
+@keyframes drift{to{transform:translateX(135vw)}}
+
+/* ── SKYLINE (CSS city, lit windows like stockcity) ── */
+.skyline{
+  position:absolute;left:0;right:0;bottom:0;height:56vh;z-index:2;
+  filter:drop-shadow(0 -8px 26px rgba(11,14,17,.18));
+  pointer-events:none;
+}
+.bldg{
+  position:absolute;bottom:0;
+  width:var(--w);height:var(--h);left:var(--x);
+  background:linear-gradient(180deg, #1a2038 0%, #141936 46%, #0b0e11 100%);
+  border-radius:2px 2px 0 0;
+}
+.bldg::before{ /* window grid */
+  content:"";position:absolute;inset:5px 4px;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 7px, var(--win,#fffdf5) 7px 8px, transparent 8px 13px),
+    repeating-linear-gradient(0deg, transparent 0 9px, var(--win,#fffdf5) 9px 10px, transparent 10px 16px);
+  opacity:var(--win-a,.16);mix-blend-mode:screen;border-radius:1px;
+}
+.bldg::after{ /* antenna */
+  content:"";position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  width:3px;height:12px;background:#2a3157;
+}
+.bldg .roof{
+  position:absolute;top:-4px;left:50%;transform:translateX(-50%);
+  width:42%;height:4px;border-radius:1px;
+  background:linear-gradient(180deg,#2a3157,#1a2038);
+}
+.bldg.glow{ /* billboard building — acid glow */
+  box-shadow:inset 0 0 0 1px rgba(196,242,38,.12);
+}
+.bldg.glow::before{
+  --win:#c4f226;--win-a:.3;
+}
+.bldg .billboard{
+  position:absolute;top:18%;left:50%;transform:translateX(-50%);
+  width:var(--bw,64%);height:22px;
+  background:linear-gradient(180deg,#0b0e11,#161a22);
+  border:1px solid rgba(255,253,245,.25);
+  display:grid;place-items:center;
+  font-family:var(--font-px);font-size:8px;letter-spacing:.08em;
+  color:var(--acid);
+  text-shadow:0 0 12px rgba(196,242,38,.6);
+  white-space:nowrap;overflow:hidden;
+  box-shadow:0 0 18px rgba(196,242,38,.15);
 }
 
 /* ── TERMINAL SHELL ── */
 .terminal-shell{
-  background:radial-gradient(circle at 72% 18%,rgba(0,200,5,0.12),transparent 31%),var(--ink);
-  isolation:isolate;
-  grid-template-rows:27px 54px 38px minmax(0,1fr) 34px;
+  position:relative;z-index:5;
+  display:grid;
+  grid-template-rows:36px 68px 46px minmax(0,1fr) 40px;
   width:100%;min-height:100svh;max-height:100svh;
-  display:grid;position:relative;overflow:hidden;
+  isolation:isolate;
 }
-.terminal-shell::after{
-  z-index:20;pointer-events:none;content:"";
-  background-image:repeating-linear-gradient(#0000 0 3px,rgba(247,246,248,0.02) 3px 4px);
-  position:fixed;inset:0;
+.terminal-shell::after{ /* CRT scanline */
+  content:"";z-index:40;pointer-events:none;position:fixed;inset:0;
+  background-image:repeating-linear-gradient(#0000 0 3px, rgba(11,14,17,.05) 3px 4px);
 }
 
 /* ── TICKER ── */
 .market-strip{
-  border-bottom:1px solid var(--green);
-  background:var(--bed);
-  min-width:0;color:var(--paper);
-  white-space:nowrap;font-size:11px;font-weight:600;line-height:26px;overflow:hidden;
+  border-bottom:1px solid var(--line-hot);
+  background:rgba(11,14,17,.92);
+  color:var(--paper);white-space:nowrap;overflow:hidden;
+  font-size:14px;font-weight:600;line-height:35px;
 }
 .ticker-track{width:max-content;animation:ticker 34s linear infinite;display:flex}
 .market-strip:hover .ticker-track{animation-play-state:paused}
-.ticker-copy{flex-shrink:0;gap:32px;padding-right:32px;display:flex}
-.ticker-copy span b{color:var(--green);margin-right:8px}
+.ticker-copy{flex-shrink:0;gap:36px;padding-right:36px;display:flex}
+.ticker-copy span b{color:var(--acid);margin-right:9px}
+.ticker-copy span em{color:var(--green);font-style:normal}
 @keyframes ticker{to{transform:translate(-50%)}}
 
 /* ── MASTHEAD ── */
 .masthead{
   border-bottom:1px solid var(--line);
-  background:var(--bed);
+  background:var(--panel-soft);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   justify-content:space-between;align-items:center;
-  padding:6px 12px;display:flex;
+  padding:8px 18px;display:flex;gap:12px;
 }
-.masthead-brand{display:flex;align-items:center;gap:10px}
+.masthead-brand{display:flex;align-items:center;gap:14px;min-width:0}
 .masthead-logo{
-  font-family:var(--font-display);
-  font-size:22px;letter-spacing:.04em;
-  color:var(--green);text-shadow:0 0 20px rgba(0,200,5,0.3);
+  font-family:var(--font-px);
+  font-size:19px;letter-spacing:.02em;
+  color:var(--acid);
+  text-shadow:0 0 22px rgba(196,242,38,.4), 2px 2px 0 rgba(11,14,17,.6);
+  white-space:nowrap;
 }
-.masthead-logo span{color:var(--paper);font-size:14px;font-family:var(--font-mono);font-weight:400}
-.masthead-tag{color:var(--muted);font-size:7px;letter-spacing:.08em;font-weight:400}
-.masthead-status{display:flex;align-items:center;gap:12px}
-.masthead-indicator{display:flex;align-items:center;gap:6px;color:var(--green);font-size:8px;letter-spacing:.06em}
-.masthead-indicator i{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.masthead-logo span{color:var(--paper);opacity:.85;font-family:var(--font-mono);font-weight:400;font-size:13px}
+.masthead-tag{color:var(--muted);font-size:12px;letter-spacing:.1em;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.masthead-status{display:flex;align-items:center;gap:16px;flex-shrink:0}
+.masthead-indicator{display:flex;align-items:center;gap:8px;color:var(--acid);font-size:12px;letter-spacing:.08em;font-weight:700}
+.masthead-indicator i{width:8px;height:8px;border-radius:50%;background:var(--acid);box-shadow:0 0 10px var(--acid);animation:pulse 1.8s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.masthead-session{color:var(--muted);font-size:7px;font-weight:400}
+.masthead-session{color:var(--muted);font-size:12px;font-weight:400}
 .terminal-button{
-  border:1px solid var(--green);
-  background:var(--blue);
-  min-height:27px;color:var(--paper);
-  letter-spacing:.06em;
+  border:1px solid var(--acid);
+  background:rgba(196,242,38,.12);
+  min-height:34px;color:var(--paper);
+  letter-spacing:.08em;
   justify-content:center;align-items:center;
-  padding:5px 9px;font-size:8px;font-weight:700;
+  padding:6px 14px;font-size:13px;font-weight:700;
   transition:all .15s;
 }
-.terminal-button:hover{
-  background:var(--paper);color:var(--ink);
-  outline:1px solid var(--paper);
-  box-shadow:3px 3px 0 var(--green);
+.terminal-button:hover:not(:disabled){
+  background:var(--acid);color:var(--ink);
+  box-shadow:3px 3px 0 rgba(196,242,38,.4);
   transform:translate(-2px,-2px);
 }
+.terminal-button:disabled{opacity:.5;cursor:not-allowed}
 
 /* ── FUNCTION RAIL ── */
 .function-rail{
-  border-bottom:1px solid var(--line-hot);
-  background:var(--ink);
-  align-items:stretch;gap:1px;min-width:0;
+  border-bottom:1px solid var(--line);
+  background:rgba(11,14,17,.72);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  align-items:stretch;gap:2px;min-width:0;
   display:flex;overflow-x:auto;
 }
 .rail-link{
-  padding:0 14px;
-  display:flex;align-items:center;gap:6px;
-  font-size:8px;font-weight:700;letter-spacing:.06em;
+  padding:0 18px;
+  display:flex;align-items:center;gap:9px;
+  font-size:13px;font-weight:700;letter-spacing:.08em;
   color:var(--muted);white-space:nowrap;
-  border-bottom:2px solid transparent;
-  transition:all .15s;
-  cursor:pointer;
+  border-bottom:3px solid transparent;
+  transition:all .15s;cursor:pointer;
 }
-.rail-link .key{color:var(--muted);font-weight:400;font-size:7px;font-family:var(--font-display)}
-.rail-link:hover{color:var(--paper);background:rgba(0,200,5,0.05)}
-.rail-link.active{color:var(--green);border-bottom-color:var(--green);background:rgba(0,200,5,0.08)}
-.rail-link.active .key{color:var(--green)}
-.rail-feed{color:var(--muted);font-size:7px;margin-left:auto;padding:0 14px;display:flex;align-items:center;gap:6px}
-.rail-feed i{width:4px;height:4px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
+.rail-link .key{color:var(--muted);font-weight:400;font-size:11px;font-family:var(--font-px)}
+.rail-link:hover{color:var(--paper);background:rgba(196,242,38,.06)}
+.rail-link.active{color:var(--acid);border-bottom-color:var(--acid);background:rgba(196,242,38,.1)}
+.rail-link.active .key{color:var(--acid)}
+.rail-feed{color:var(--muted);font-size:12px;margin-left:auto;padding:0 18px;display:flex;align-items:center;gap:8px}
+.rail-feed i{width:6px;height:6px;border-radius:50%;background:var(--acid);box-shadow:0 0 8px var(--acid);animation:pulse 1.5s infinite}
 
 /* ── ROOM VIEWPORT ── */
 .room-viewport{overflow:hidden;position:relative}
 .room-screen{height:100%;overflow:auto}
-.room-screen::-webkit-scrollbar{width:4px}
-.room-screen::-webkit-scrollbar-track{background:var(--ink)}
-.room-screen::-webkit-scrollbar-thumb{background:var(--line-hot)}
+.room-screen::-webkit-scrollbar{width:5px}
+.room-screen::-webkit-scrollbar-track{background:rgba(11,14,17,.4)}
+.room-screen::-webkit-scrollbar-thumb{background:rgba(196,242,38,.4)}
 
 /* ── ROOM PAGE ── */
-.room-page{padding:5px;min-height:100%;display:flex;flex-direction:column;gap:5px}
+.room-page{padding:16px;min-height:100%;display:flex;flex-direction:column;gap:14px}
+.room-panel{display:none}
+.room-panel.active{display:flex;flex-direction:column;gap:14px;padding:16px;min-height:100%}
 
-/* Hero section with city skyline */
+/* ── HERO (F1 skyline room: see-through over the city) ── */
 .hero-section{
   position:relative;
-  background:var(--bed);
+  background:linear-gradient(180deg, rgba(11,14,17,.55), rgba(11,14,17,.35));
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
   border:1px solid var(--line);
-  padding:20px;
-  min-height:220px;
-  overflow:hidden;
+  padding:28px 24px;
+  min-height:300px;
   display:flex;flex-direction:column;justify-content:flex-end;
+  overflow:hidden;
 }
 .hero-section::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(180deg,transparent 40%,var(--bed) 95%);
-  z-index:1;
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg, transparent 55%, rgba(11,14,17,.5) 100%);
 }
 .hero-title{
-  font-family:var(--font-display);
-  font-size:clamp(28px,5vw,48px);
-  letter-spacing:.06em;
+  font-family:var(--font-px);
+  font-size:clamp(22px,4.4vw,42px);
+  line-height:1.25;letter-spacing:.03em;
   color:var(--paper);
   position:relative;z-index:2;
-  text-shadow:0 0 40px rgba(0,200,5,0.2);
+  text-shadow:0 0 34px rgba(0,200,5,.35), 3px 3px 0 rgba(11,14,17,.55);
 }
-.hero-title em{color:var(--green);font-style:normal}
+.hero-title em{color:var(--acid);font-style:normal}
 .hero-sub{
-  font-size:8px;color:var(--muted);letter-spacing:.08em;
-  margin-top:4px;position:relative;z-index:2;
+  font-size:15px;font-weight:600;color:var(--paper);
+  letter-spacing:.1em;margin-top:12px;position:relative;z-index:2;
+  text-shadow:0 1px 0 rgba(11,14,17,.6);
 }
 .hero-stats{
-  display:flex;gap:24px;margin-top:14px;position:relative;z-index:2;
+  display:flex;gap:36px;margin-top:20px;position:relative;z-index:2;flex-wrap:wrap;
 }
-.hero-stat{display:flex;flex-direction:column;gap:2px}
-.hero-stat-val{font-size:16px;font-weight:700;color:var(--green);font-family:var(--font-display);letter-spacing:.04em}
-.hero-stat-label{font-size:6px;color:var(--muted);letter-spacing:.1em;font-weight:400}
+.hero-stat{display:flex;flex-direction:column;gap:4px}
+.hero-stat-val{
+  font-family:var(--font-num);font-size:34px;line-height:1;
+  font-weight:400;color:var(--acid);
+  text-shadow:0 0 18px rgba(196,242,38,.35);
+}
+.hero-stat-label{font-size:12px;color:var(--muted);letter-spacing:.14em;font-weight:500;text-shadow:0 1px 0 rgba(11,14,17,.6)}
 
-/* CSS City Skyline */
-.skyline{
-  position:absolute;bottom:0;left:0;right:0;height:140px;
-  z-index:0;opacity:.15;
-}
-.skyline b{
-  position:absolute;bottom:0;
-  background:var(--green);
-  width:var(--w);
-  height:var(--h);
-  left:var(--x);
-  border-radius:2px 2px 0 0;
-}
-.skyline b::before{
-  content:'';position:absolute;top:var(--ant,10px);
-  left:50%;transform:translateX(-50%);
-  width:var(--aw,6px);height:var(--ah,4px);
-  background:rgba(0,200,5,0.3);
-  border-radius:1px;
-}
-.skyline b::after{
-  content:'';position:absolute;top:4px;left:50%;transform:translateX(-50%);
-  width:var(--sw,2px);height:var(--sh,6px);
-  background:rgba(0,200,5,0.2);
-  border-radius:1px;
-}
-
-/* Cards grid */
-.card-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:5px;
-}
+/* ── CARDS ── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
 .card{
-  background:var(--bed);
+  background:var(--panel);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   border:1px solid var(--line);
-  padding:12px 14px;
-  min-height:100px;
-  display:flex;flex-direction:column;
-  gap:8px;
+  border-top:2px solid var(--acid);
+  padding:16px 18px;
+  display:flex;flex-direction:column;gap:10px;
+  transition:transform .15s, box-shadow .15s;
 }
+.card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(11,14,17,.35)}
 .card-header{
   display:flex;justify-content:space-between;align-items:center;
-  font-size:7px;letter-spacing:.08em;color:var(--muted);font-weight:400;
+  font-size:12px;letter-spacing:.12em;color:var(--muted);font-weight:600;
 }
 .card-header .badge{
-  font-size:6px;font-weight:700;
-  color:var(--green);letter-spacing:.06em;
+  font-size:11px;font-weight:700;padding:2px 8px;
+  color:var(--acid);letter-spacing:.1em;
+  border:1px solid rgba(196,242,38,.4);
+  background:rgba(196,242,38,.08);
 }
-.card-body{flex:1;display:flex;flex-direction:column;gap:6px}
+.card-body{flex:1;display:flex;flex-direction:column;gap:8px}
 .card-value{
-  font-family:var(--font-display);font-size:24px;color:var(--paper);letter-spacing:.02em;
+  font-family:var(--font-num);font-size:36px;line-height:1;letter-spacing:.02em;color:var(--paper);
 }
 .card-value .green{color:var(--green)}
-.card-value .mint{color:var(--mint)}
+.card-value .acid{color:var(--acid)}
 .card-value .cyan{color:var(--cyan)}
 .card-value .amber{color:var(--amber)}
-.card-label{font-size:6px;color:var(--muted);letter-spacing:.1em;font-weight:400}
-.card-row{display:flex;justify-content:space-between;font-size:8px;padding:3px 0;border-bottom:1px solid var(--line)}
+.card-label{font-size:12px;color:var(--muted);letter-spacing:.14em;font-weight:500}
+.card-row{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;border-bottom:1px solid rgba(255,253,245,.08);gap:10px}
 .card-row:last-child{border-bottom:0}
 .card-row .l{color:var(--muted);font-weight:400}
-.card-row .r{color:var(--paper)}
+.card-row .r{color:var(--paper);text-align:right}
+.card-note{font-size:13px;color:var(--muted);font-weight:400;line-height:1.7}
+.card-note b{color:var(--acid);font-weight:600}
 
-/* NFT Mint Card */
+/* ── MINT ── */
+.mint-hero{
+  background:var(--panel);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--line);border-top:2px solid var(--acid);
+  padding:26px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+}
+.mint-hero-title{font-family:var(--font-px);font-size:clamp(18px,3vw,28px);color:var(--acid);letter-spacing:.02em;line-height:1.4}
+.mint-hero-sub{font-size:15px;color:var(--muted);letter-spacing:.05em;max-width:560px;line-height:1.7;font-weight:400}
+.mint-step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.mint-step{
+  background:var(--panel);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--line);
+  padding:18px 14px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  transition:transform .15s, box-shadow .15s;
+}
+.mint-step:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(11,14,17,.35)}
+.mint-step-num{font-family:var(--font-num);font-size:40px;line-height:1;color:var(--acid);text-shadow:0 0 16px rgba(196,242,38,.35)}
+.mint-step-label{font-size:14px;font-weight:700;color:var(--paper);letter-spacing:.08em}
+.mint-step-desc{font-size:12px;color:var(--muted);letter-spacing:.04em;font-weight:400;line-height:1.6}
 .mint-card{
-  background:linear-gradient(135deg,var(--bed),rgba(0,200,5,0.05));
-  border:1px solid var(--green);
-  padding:16px;
-  display:flex;flex-direction:column;gap:10px;
+  background:linear-gradient(135deg, rgba(11,14,17,.92), rgba(24,26,32,.85));
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(196,242,38,.45);
+  padding:20px;
+  display:flex;flex-direction:column;gap:14px;
   position:relative;overflow:hidden;
 }
 .mint-card::before{
-  content:'';position:absolute;top:-50%;right:-50%;
-  width:100%;height:100%;
-  background:radial-gradient(circle,rgba(0,200,5,0.06),transparent 70%);
+  content:'';position:absolute;top:-60%;right:-30%;
+  width:70%;height:130%;
+  background:radial-gradient(circle, rgba(196,242,38,.08), transparent 70%);
   pointer-events:none;
 }
-.mint-header{display:flex;justify-content:space-between;align-items:center}
-.mint-title{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--green)}
-.mint-badge{border:1px solid var(--green);font-size:6px;padding:2px 6px;color:var(--green);letter-spacing:.06em;font-weight:700}
-.mint-preview{
-  display:flex;gap:12px;align-items:center;
-  position:relative;z-index:1;
-}
+.mint-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.mint-title{font-size:16px;font-weight:700;letter-spacing:.1em;color:var(--acid)}
+.mint-badge{border:1px solid var(--acid);font-size:12px;padding:3px 10px;color:var(--acid);letter-spacing:.1em;font-weight:700}
+.mint-preview{display:flex;gap:20px;align-items:center;position:relative;z-index:1;flex-wrap:wrap}
 .mint-frame{
-  width:120px;height:120px;
-  border:1px solid var(--line-hot);
-  background:linear-gradient(135deg,rgba(0,200,5,0.08),rgba(0,200,5,0.02));
+  width:150px;height:150px;
+  border:1px solid rgba(196,242,38,.35);
+  background:linear-gradient(135deg, rgba(196,242,38,.1), rgba(0,200,5,.03));
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;
 }
-.mint-frame svg{width:60px;height:60px}
-.mint-info{display:flex;flex-direction:column;gap:6px}
-.mint-info-row{display:flex;gap:8px;align-items:center}
-.mint-info-label{font-size:6px;color:var(--muted);letter-spacing:.1em;font-weight:400}
-.mint-info-val{font-size:9px;color:var(--paper)}
-.mint-progress{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:4px}
-.mint-progress-bar{height:100%;background:var(--green);border-radius:2px;width:0%}
+.mint-frame svg{width:80px;height:80px}
+.mint-info{display:flex;flex-direction:column;gap:8px;flex:1;min-width:220px}
+.mint-info-row{display:flex;gap:12px;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,253,245,.08);padding:4px 0}
+.mint-info-label{font-size:12px;color:var(--muted);letter-spacing:.12em;font-weight:500}
+.mint-info-val{font-size:16px;color:var(--paper);font-weight:600}
+.mint-progress{height:8px;background:rgba(255,253,245,.1);border-radius:4px;overflow:hidden;margin-top:6px}
+.mint-progress-bar{height:100%;background:linear-gradient(90deg,var(--green),var(--acid));border-radius:4px;width:0%;transition:width .4s}
 
 /* ── COMMAND LINE ── */
 .command-line{
-  border-top:1px solid var(--cyan);
-  background:var(--paper);
-  min-width:0;color:var(--ink);
-  align-items:center;gap:8px;
-  padding:0 10px;font-size:10px;font-weight:600;
+  border-top:1px solid rgba(196,242,38,.45);
+  background:rgba(11,14,17,.94);
+  color:var(--paper);
+  align-items:center;gap:12px;
+  padding:0 16px;font-size:15px;font-weight:600;
   display:flex;
   position:sticky;bottom:0;z-index:10;
 }
-.cmd-prompt{color:var(--green);font-weight:700}
-.cmd-input{flex:1;background:0 0;border:0;color:var(--ink);font-size:9px;font-weight:600;padding:4px 0}
-.cmd-input::placeholder{color:rgba(1,0,16,0.3)}
-.cmd-help{color:rgba(1,0,16,0.4);font-size:7px;font-weight:400;margin-left:auto;white-space:nowrap}
-
-/* ── ROOM panels ── */
-.room-panel{display:none}
-.room-panel.active{display:flex;flex-direction:column;gap:5px;padding:5px;min-height:100%}
-
-/* ── MINT ROOM ── */
-.mint-hero{
-  background:var(--bed);border:1px solid var(--line);
-  padding:16px;text-align:center;
-  display:flex;flex-direction:column;align-items:center;gap:10px;
-}
-.mint-hero-title{font-family:var(--font-display);font-size:32px;color:var(--green);letter-spacing:.04em}
-.mint-hero-sub{font-size:8px;color:var(--muted);letter-spacing:.08em;max-width:400px;line-height:1.6}
-.mint-step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:4px}
-.mint-step{
-  background:var(--bed);border:1px solid var(--line);
-  padding:12px;text-align:center;
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-}
-.mint-step-num{
-  font-family:var(--font-display);font-size:28px;color:var(--green);
-  line-height:1;
-}
-.mint-step-label{font-size:8px;font-weight:700;color:var(--paper);letter-spacing:.06em}
-.mint-step-desc{font-size:6px;color:var(--muted);letter-spacing:.06em;font-weight:400;line-height:1.5}
+.cmd-prompt{color:var(--acid);font-weight:700;font-family:var(--font-px);font-size:12px}
+.cmd-input{flex:1;background:0 0;border:0;color:var(--paper);font-size:15px;font-weight:500;padding:6px 0}
+.cmd-input::placeholder{color:rgba(255,253,245,.35)}
+.cmd-help{color:var(--muted);font-size:12px;font-weight:400;margin-left:auto;white-space:nowrap}
 
 /* ── RESPONSIVE ── */
-@media(max-width:600px){
-  .hero-stats{flex-wrap:wrap;gap:12px}
+@media(max-width:720px){
+  .terminal-shell{grid-template-rows:34px 58px 42px minmax(0,1fr) 38px}
+  .hero-stats{gap:18px}
   .mint-preview{flex-direction:column}
   .mint-step-grid{grid-template-columns:1fr}
   .card-grid{grid-template-columns:1fr}
   .masthead-tag{display:none}
   .masthead-session{display:none}
   .rail-feed{display:none}
+  .room-page,.room-panel.active{padding:10px}
 }
 </style>
 </head>
 <body>
+
+<!-- CITY BACKDROP (stockcity.app style sky) -->
+<div class="city-sky" aria-hidden="true">
+  <div class="sun"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+  <div class="skyline">
+    <div class="bldg" style="--x:0%;--w:56px;--h:34vh"><div class="roof"></div></div>
+    <div class="bldg" style="--x:6%;--w:84px;--h:48vh"><div class="roof"></div></div>
+    <div class="bldg glow" style="--x:13%;--w:70px;--h:38vh">
+      <div class="billboard" style="--bw:82%">SBCITY</div>
+    </div>
+    <div class="bldg" style="--x:19%;--w:44px;--h:26vh"><div class="roof"></div></div>
+    <div class="bldg" style="--x:23%;--w:96px;--h:56vh"><div class="roof"></div></div>
+    <div class="bldg glow" style="--x:31%;--w:66px;--h:42vh">
+      <div class="billboard" style="--bw:88%">BUY / HOLD</div>
+    </div>
+    <div class="bldg" style="--x:37%;--w:38px;--h:24vh"><div class="roof"></div></div>
+    <div class="bldg" style="--x:41%;--w:112px;--h:62vh">
+      <div class="billboard" style="--bw:70%;color:var(--green);border-color:rgba(0,200,5,.5)">MINT</div>
+    </div>
+    <div class="bldg" style="--x:49%;--w:54px;--h:36vh"><div class="roof"></div></div>
+    <div class="bldg" style="--x:54%;--w:78px;--h:50vh"><div class="roof"></div></div>
+    <div class="bldg glow" style="--x:61%;--w:62px;--h:30vh">
+      <div class="billboard" style="--bw:80%">$SBCITY</div>
+    </div>
+    <div class="bldg" style="--x:67%;--w:100px;--h:58vh"><div class="roof"></div></div>
+    <div class="bldg" style="--x:74%;--w:48px;--h:28vh"><div class="roof"></div></div>
+    <div class="bldg glow" style="--x:78%;--w:74px;--h:44vh">
+      <div class="billboard" style="--bw:76%">DIVIDEND</div>
+    </div>
+    <div class="bldg" style="--x:85%;--w:60px;--h:40vh"><div class="roof"></div></div>
+    <div class="bldg" style="--x:91%;--w:86px;--h:52vh"><div class="roof"></div></div>
+    <div class="bldg" style="--x:97%;--w:52px;--h:32vh"><div class="roof"></div></div>
+  </div>
+</div>
 
 <div class="terminal-shell">
 
@@ -325,31 +434,31 @@ img{display:block;max-width:100%}
     <div class="ticker-track">
       <div class="ticker-copy">
         <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
-        <span><b>◆</b> TICKER <b>$SBCITY</b></span>
-        <span><b>◆</b> SUPPLY <b>—</b></span>
-        <span><b>◆</b> MINT <b>COMING SOON</b></span>
-        <span><b>◆</b> FEE <b>—</b></span>
-        <span><b>◆</b> FLOOR <b>—</b></span>
+        <span><b>◆</b> TICKER <em>$SBCITY</em></span>
+        <span><b>◆</b> SUPPLY <em>—</em></span>
+        <span><b>◆</b> MINT <em>COMING SOON</em></span>
+        <span><b>◆</b> FEE <em>—</em></span>
+        <span><b>◆</b> FLOOR <em>—</em></span>
         <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
-        <span><b>◆</b> TICKER <b>$SBCITY</b></span>
-        <span><b>◆</b> SUPPLY <b>—</b></span>
-        <span><b>◆</b> MINT <b>COMING SOON</b></span>
-        <span><b>◆</b> FEE <b>—</b></span>
-        <span><b>◆</b> FLOOR <b>—</b></span>
+        <span><b>◆</b> TICKER <em>$SBCITY</em></span>
+        <span><b>◆</b> SUPPLY <em>—</em></span>
+        <span><b>◆</b> MINT <em>COMING SOON</em></span>
+        <span><b>◆</b> FEE <em>—</em></span>
+        <span><b>◆</b> FLOOR <em>—</em></span>
       </div>
       <div class="ticker-copy">
         <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
-        <span><b>◆</b> TICKER <b>$SBCITY</b></span>
-        <span><b>◆</b> SUPPLY <b>—</b></span>
-        <span><b>◆</b> MINT <b>COMING SOON</b></span>
-        <span><b>◆</b> FEE <b>—</b></span>
-        <span><b>◆</b> FLOOR <b>—</b></span>
+        <span><b>◆</b> TICKER <em>$SBCITY</em></span>
+        <span><b>◆</b> SUPPLY <em>—</em></span>
+        <span><b>◆</b> MINT <em>COMING SOON</em></span>
+        <span><b>◆</b> FEE <em>—</em></span>
+        <span><b>◆</b> FLOOR <em>—</em></span>
         <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
-        <span><b>◆</b> TICKER <b>$SBCITY</b></span>
-        <span><b>◆</b> SUPPLY <b>—</b></span>
-        <span><b>◆</b> MINT <b>COMING SOON</b></span>
-        <span><b>◆</b> FEE <b>—</b></span>
-        <span><b>◆</b> FLOOR <b>—</b></span>
+        <span><b>◆</b> TICKER <em>$SBCITY</em></span>
+        <span><b>◆</b> SUPPLY <em>—</em></span>
+        <span><b>◆</b> MINT <em>COMING SOON</em></span>
+        <span><b>◆</b> FEE <em>—</em></span>
+        <span><b>◆</b> FLOOR <em>—</em></span>
       </div>
     </div>
   </div>
@@ -357,15 +466,13 @@ img{display:block;max-width:100%}
   <!-- MASTHEAD -->
   <header class="masthead">
     <div class="masthead-brand">
-      <div class="masthead-logo">SBCITY <span>//</span></div>
+      <div class="masthead-logo">STOCKCITY <span>// SBCITY</span></div>
       <div>
         <div class="masthead-tag">BROKER WORKSTATION // ROBINHOOD CHAIN</div>
       </div>
     </div>
     <div class="masthead-status">
-      <div class="masthead-indicator">
-        <i></i> MARKET LIVE
-      </div>
+      <div class="masthead-indicator"><i></i> MARKET LIVE</div>
       <div class="masthead-session">SESSION 0001-S</div>
       <button class="terminal-button" disabled>WALLET SOON</button>
     </div>
@@ -392,18 +499,6 @@ img{display:block;max-width:100%}
         <div class="room-page">
 
           <div class="hero-section">
-            <div class="skyline">
-              <b style="--x:5%;--w:18px;--h:80px;--ant:6px;--aw:4px;--ah:3px;--sw:2px;--sh:10px"></b>
-              <b style="--x:14%;--w:12px;--h:50px;--ant:4px;--aw:3px;--ah:2px;--sw:1px;--sh:6px"></b>
-              <b style="--x:20%;--w:22px;--h:120px;--ant:8px;--aw:6px;--ah:4px;--sw:2px;--sh:14px"></b>
-              <b style="--x:34%;--w:15px;--h:65px;--ant:5px;--aw:4px;--ah:3px;--sw:2px;--sh:8px"></b>
-              <b style="--x:40%;--w:28px;--h:140px;--ant:10px;--aw:8px;--ah:5px;--sw:3px;--sh:16px"></b>
-              <b style="--x:56%;--w:10px;--h:40px;--ant:3px;--aw:3px;--ah:2px;--sw:1px;--sh:5px"></b>
-              <b style="--x:62%;--w:20px;--h:95px;--ant:7px;--aw:5px;--ah:3px;--sw:2px;--sh:12px"></b>
-              <b style="--x:75%;--w:16px;--h:70px;--ant:5px;--aw:4px;--ah:3px;--sw:2px;--sh:8px"></b>
-              <b style="--x:84%;--w:24px;--h:110px;--ant:8px;--aw:6px;--ah:4px;--sw:2px;--sh:12px"></b>
-              <b style="--x:94%;--w:14px;--h:55px;--ant:4px;--aw:3px;--ah:2px;--sw:1px;--sh:6px"></b>
-            </div>
             <div class="hero-title">STOCK<em>BROKER</em>CITY</div>
             <div class="hero-sub">THE STOCK DIVIDEND METROPOLIS // MINT NFTs WITH $SBCITY TOKEN</div>
             <div class="hero-stats">
@@ -440,7 +535,7 @@ img{display:block;max-width:100%}
             <div class="card">
               <div class="card-header"><span>NFT MINT</span><span class="badge">PRE-SALE</span></div>
               <div class="card-body">
-                <div class="card-value green">COMING</div>
+                <div class="card-value acid">COMING</div>
                 <div class="card-label">MINT WITH $SBCITY TOKEN</div>
                 <div class="card-row"><span class="l">PRICE</span><span class="r">—</span></div>
                 <div class="card-row"><span class="l">MAX SUPPLY</span><span class="r">—</span></div>
@@ -484,9 +579,9 @@ img{display:block;max-width:100%}
           <div class="card">
             <div class="card-header"><span>TRADING FLOOR</span><span class="badge">LIVE</span></div>
             <div class="card-body">
-              <div class="card-value green">—</div>
+              <div class="card-value acid">—</div>
               <div class="card-label">TRADING DATA COMING AT LAUNCH</div>
-              <div style="margin-top:8px;font-size:7px;color:var(--muted);font-weight:400;line-height:1.6">
+              <div class="card-note" style="margin-top:6px">
                 The StockBrokerCity trading floor monitors all $SBCITY activity in real-time.
                 Volume, trades, buys, sells — every transaction visible on-chain.
               </div>
@@ -533,18 +628,18 @@ img{display:block;max-width:100%}
             <div class="mint-preview">
               <div class="mint-frame">
                 <svg viewBox="0 0 60 60" fill="none">
-                  <rect width="60" height="60" fill="rgba(0,200,5,0.05)" rx="4"/>
-                  <rect x="10" y="25" width="8" height="25" fill="rgba(0,200,5,0.3)" rx="1"/>
-                  <rect x="20" y="15" width="12" height="35" fill="rgba(0,200,5,0.4)" rx="1"/>
-                  <rect x="34" y="20" width="10" height="30" fill="rgba(0,200,5,0.35)" rx="1"/>
-                  <rect x="46" y="28" width="6" height="22" fill="rgba(0,200,5,0.25)" rx="1"/>
-                  <rect x="22" y="18" width="3" height="4" fill="rgba(0,200,5,0.5)" rx="0.5"/>
-                  <rect x="27" y="18" width="3" height="4" fill="rgba(0,200,5,0.5)" rx="0.5"/>
-                  <rect x="36" y="23" width="3" height="4" fill="rgba(0,200,5,0.5)" rx="0.5"/>
-                  <rect x="41" y="23" width="3" height="4" fill="rgba(0,200,5,0.5)" rx="0.5"/>
-                  <rect x="12" y="28" width="2" height="3" fill="rgba(0,200,5,0.5)" rx="0.5"/>
-                  <rect x="15" y="28" width="2" height="3" fill="rgba(0,200,5,0.5)" rx="0.5"/>
-                  <text x="30" y="52" text-anchor="middle" fill="rgba(0,200,5,0.4)" font-size="6" font-family="monospace">SBCITY</text>
+                  <rect width="60" height="60" fill="rgba(196,242,38,0.06)" rx="4"/>
+                  <rect x="10" y="25" width="8" height="25" fill="rgba(196,242,38,0.35)" rx="1"/>
+                  <rect x="20" y="15" width="12" height="35" fill="rgba(0,200,5,0.45)" rx="1"/>
+                  <rect x="34" y="20" width="10" height="30" fill="rgba(196,242,38,0.4)" rx="1"/>
+                  <rect x="46" y="28" width="6" height="22" fill="rgba(0,200,5,0.3)" rx="1"/>
+                  <rect x="22" y="18" width="3" height="4" fill="rgba(196,242,38,0.6)" rx="0.5"/>
+                  <rect x="27" y="18" width="3" height="4" fill="rgba(196,242,38,0.6)" rx="0.5"/>
+                  <rect x="36" y="23" width="3" height="4" fill="rgba(0,200,5,0.6)" rx="0.5"/>
+                  <rect x="41" y="23" width="3" height="4" fill="rgba(0,200,5,0.6)" rx="0.5"/>
+                  <rect x="12" y="28" width="2" height="3" fill="rgba(196,242,38,0.6)" rx="0.5"/>
+                  <rect x="15" y="28" width="2" height="3" fill="rgba(196,242,38,0.6)" rx="0.5"/>
+                  <text x="30" y="52" text-anchor="middle" fill="rgba(196,242,38,0.5)" font-size="6" font-family="monospace">SBCITY</text>
                 </svg>
               </div>
               <div class="mint-info">
@@ -560,7 +655,7 @@ img{display:block;max-width:100%}
                   <span class="mint-info-label">YOUR BALANCE</span>
                   <span class="mint-info-val">—</span>
                 </div>
-                <div style="margin-top:4px">
+                <div style="margin-top:6px">
                   <span class="mint-info-label">MINT PROGRESS</span>
                   <div class="mint-progress"><div class="mint-progress-bar" style="width:0%"></div></div>
                 </div>
@@ -576,9 +671,9 @@ img{display:block;max-width:100%}
           <div class="card">
             <div class="card-header"><span>HOLDERS</span><span class="badge">$SBCITY</span></div>
             <div class="card-body">
-              <div class="card-value green">—</div>
+              <div class="card-value acid">—</div>
               <div class="card-label">HOLDER DATA COMING AT LAUNCH</div>
-              <div style="margin-top:8px;font-size:7px;color:var(--muted);font-weight:400;line-height:1.6">
+              <div class="card-note" style="margin-top:6px">
                 Top holders, distribution, and holder activity will be visible here once
                 the $SBCITY token is deployed on Robinhood Chain.
               </div>
@@ -597,20 +692,20 @@ img{display:block;max-width:100%}
           <div class="card-grid">
             <div class="card">
               <div class="card-header"><span>MECHANISM</span></div>
-              <div class="card-body" style="font-size:7px;font-weight:400;color:var(--muted);line-height:1.7;gap:6px">
-                <div><b style="color:var(--green)">01</b> Trade $SBCITY generates fees (1-3%)</div>
-                <div><b style="color:var(--green)">02</b> Fee pool accumulates in the city treasury</div>
-                <div><b style="color:var(--green)">03</b> Treasury buys back $SBCITY / distributes to NFT holders</div>
-                <div><b style="color:var(--green)">04</b> NFT holders receive dividends automatically</div>
+              <div class="card-body card-note" style="gap:10px">
+                <div><b>01</b> Trade $SBCITY generates fees (1-3%)</div>
+                <div><b>02</b> Fee pool accumulates in the city treasury</div>
+                <div><b>03</b> Treasury buys back $SBCITY / distributes to NFT holders</div>
+                <div><b>04</b> NFT holders receive dividends automatically</div>
               </div>
             </div>
             <div class="card">
               <div class="card-header"><span>SUPPLY</span></div>
-              <div class="card-body" style="font-size:7px;font-weight:400;color:var(--muted);line-height:1.7;gap:6px">
+              <div class="card-body card-note" style="gap:10px">
                 <div class="card-row"><span class="l">TOKEN</span><span class="r">$SBCITY</span></div>
                 <div class="card-row"><span class="l">NFT COLLECTION</span><span class="r">STOCKBROKERCITY</span></div>
                 <div class="card-row"><span class="l">CHAIN</span><span class="r">ROBINHOOD (4663)</span></div>
-                <div style="margin-top:4px;color:var(--muted)">
+                <div style="margin-top:4px;color:var(--muted);font-size:13px">
                   Full documentation and whitepaper published at launch.
                 </div>
               </div>
@@ -625,9 +720,9 @@ img{display:block;max-width:100%}
           <div class="card">
             <div class="card-header"><span>LIQUIDITY POOL</span><span class="badge">SOON</span></div>
             <div class="card-body">
-              <div class="card-value green">—</div>
+              <div class="card-value acid">—</div>
               <div class="card-label">POOL DATA COMING AT LAUNCH</div>
-              <div style="margin-top:8px;font-size:7px;color:var(--muted);font-weight:400;line-height:1.6">
+              <div class="card-note" style="margin-top:6px">
                 The StockBrokerCity liquidity pool powers all trading on Ponsfamily.
                 Fee distribution, pool composition, and locking status displayed here.
               </div>
