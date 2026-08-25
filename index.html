@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#010010" />
+<title>STOCKBROKERCITY // SBCITY</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet" />
+<style>
+/* ── RESET ── */
+*,::before,::after{box-sizing:border-box;margin:0;padding:0}
+body,html{min-height:100%;background:#010010;color:#f7f6f8;font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Consolas,monospace;font-size:10px;font-weight:600;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:inherit;text-decoration:none}
+input,button{font:inherit;color:inherit;background:0 0;border:0;outline:0}
+button{cursor:pointer}
+img{display:block;max-width:100%}
+
+/* ── CSS VARS ── */
+:root{
+  --ink:#010010;
+  --bed:#0a1230;
+  --line:#121933;
+  --line-hot:#16204a;
+  --blue:#0052ec;
+  --cyan:#01b3fe;
+  --green:#00C805;
+  --mint:#4ADE80;
+  --paper:#f7f6f8;
+  --muted:#5b6b94;
+  --amber:#ffb454;
+  --red:#ff8d8d;
+  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
+  --font-display:VT323,var(--font-mono);
+}
+
+/* ── TERMINAL SHELL ── */
+.terminal-shell{
+  background:radial-gradient(circle at 72% 18%,rgba(0,200,5,0.12),transparent 31%),var(--ink);
+  isolation:isolate;
+  grid-template-rows:27px 54px 38px minmax(0,1fr) 34px;
+  width:100%;min-height:100svh;max-height:100svh;
+  display:grid;position:relative;overflow:hidden;
+}
+.terminal-shell::after{
+  z-index:20;pointer-events:none;content:"";
+  background-image:repeating-linear-gradient(#0000 0 3px,rgba(247,246,248,0.02) 3px 4px);
+  position:fixed;inset:0;
+}
+
+/* ── TICKER ── */
+.market-strip{
+  border-bottom:1px solid var(--green);
+  background:var(--bed);
+  min-width:0;color:var(--paper);
+  white-space:nowrap;font-size:11px;font-weight:600;line-height:26px;overflow:hidden;
+}
+.ticker-track{width:max-content;animation:ticker 34s linear infinite;display:flex}
+.market-strip:hover .ticker-track{animation-play-state:paused}
+.ticker-copy{flex-shrink:0;gap:32px;padding-right:32px;display:flex}
+.ticker-copy span b{color:var(--green);margin-right:8px}
+@keyframes ticker{to{transform:translate(-50%)}}
+
+/* ── MASTHEAD ── */
+.masthead{
+  border-bottom:1px solid var(--line);
+  background:var(--bed);
+  justify-content:space-between;align-items:center;
+  padding:6px 12px;display:flex;
+}
+.masthead-brand{display:flex;align-items:center;gap:10px}
+.masthead-logo{
+  font-family:var(--font-display);
+  font-size:22px;letter-spacing:.04em;
+  color:var(--green);text-shadow:0 0 20px rgba(0,200,5,0.3);
+}
+.masthead-logo span{color:var(--paper);font-size:14px;font-family:var(--font-mono);font-weight:400}
+.masthead-tag{color:var(--muted);font-size:7px;letter-spacing:.08em;font-weight:400}
+.masthead-status{display:flex;align-items:center;gap:12px}
+.masthead-indicator{display:flex;align-items:center;gap:6px;color:var(--green);font-size:8px;letter-spacing:.06em}
+.masthead-indicator i{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.masthead-session{color:var(--muted);font-size:7px;font-weight:400}
+.terminal-button{
+  border:1px solid var(--green);
+  background:var(--blue);
+  min-height:27px;color:var(--paper);
+  letter-spacing:.06em;
+  justify-content:center;align-items:center;
+  padding:5px 9px;font-size:8px;font-weight:700;
+  transition:all .15s;
+}
+.terminal-button:hover{
+  background:var(--paper);color:var(--ink);
+  outline:1px solid var(--paper);
+  box-shadow:3px 3px 0 var(--green);
+  transform:translate(-2px,-2px);
+}
+
+/* ── FUNCTION RAIL ── */
+.function-rail{
+  border-bottom:1px solid var(--line-hot);
+  background:var(--ink);
+  align-items:stretch;gap:1px;min-width:0;
+  display:flex;overflow-x:auto;
+}
+.rail-link{
+  padding:0 14px;
+  display:flex;align-items:center;gap:6px;
+  font-size:8px;font-weight:700;letter-spacing:.06em;
+  color:var(--muted);white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:all .15s;
+  cursor:pointer;
+}
+.rail-link .key{color:var(--muted);font-weight:400;font-size:7px;font-family:var(--font-display)}
+.rail-link:hover{color:var(--paper);background:rgba(0,200,5,0.05)}
+.rail-link.active{color:var(--green);border-bottom-color:var(--green);background:rgba(0,200,5,0.08)}
+.rail-link.active .key{color:var(--green)}
+.rail-feed{color:var(--muted);font-size:7px;margin-left:auto;padding:0 14px;display:flex;align-items:center;gap:6px}
+.rail-feed i{width:4px;height:4px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
+
+/* ── ROOM VIEWPORT ── */
+.room-viewport{overflow:hidden;position:relative}
+.room-screen{height:100%;overflow:auto}
+.room-screen::-webkit-scrollbar{width:4px}
+.room-screen::-webkit-scrollbar-track{background:var(--ink)}
+.room-screen::-webkit-scrollbar-thumb{background:var(--line-hot)}
+
+/* ── ROOM PAGE ── */
+.room-page{padding:5px;min-height:100%;display:flex;flex-direction:column;gap:5px}
+
+/* Hero section with city skyline */
+.hero-section{
+  position:relative;
+  background:var(--bed);
+  border:1px solid var(--line);
+  padding:20px;
+  min-height:220px;
+  overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-end;
+}
+.hero-section::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,var(--bed) 95%);
+  z-index:1;
+}
+.hero-title{
+  font-family:var(--font-display);
+  font-size:clamp(28px,5vw,48px);
+  letter-spacing:.06em;
+  color:var(--paper);
+  position:relative;z-index:2;
+  text-shadow:0 0 40px rgba(0,200,5,0.2);
+}
+.hero-title em{color:var(--green);font-style:normal}
+.hero-sub{
+  font-size:8px;color:var(--muted);letter-spacing:.08em;
+  margin-top:4px;position:relative;z-index:2;
+}
+.hero-stats{
+  display:flex;gap:24px;margin-top:14px;position:relative;z-index:2;
+}
+.hero-stat{display:flex;flex-direction:column;gap:2px}
+.hero-stat-val{font-size:16px;font-weight:700;color:var(--green);font-family:var(--font-display);letter-spacing:.04em}
+.hero-stat-label{font-size:6px;color:var(--muted);letter-spacing:.1em;font-weight:400}
+
+/* CSS City Skyline */
+.skyline{
+  position:absolute;bottom:0;left:0;right:0;height:140px;
+  z-index:0;opacity:.15;
+}
+.skyline b{
+  position:absolute;bottom:0;
+  background:var(--green);
+  width:var(--w);
+  height:var(--h);
+  left:var(--x);
+  border-radius:2px 2px 0 0;
+}
+.skyline b::before{
+  content:'';position:absolute;top:var(--ant,10px);
+  left:50%;transform:translateX(-50%);
+  width:var(--aw,6px);height:var(--ah,4px);
+  background:rgba(0,200,5,0.3);
+  border-radius:1px;
+}
+.skyline b::after{
+  content:'';position:absolute;top:4px;left:50%;transform:translateX(-50%);
+  width:var(--sw,2px);height:var(--sh,6px);
+  background:rgba(0,200,5,0.2);
+  border-radius:1px;
+}
+
+/* Cards grid */
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:5px;
+}
+.card{
+  background:var(--bed);
+  border:1px solid var(--line);
+  padding:12px 14px;
+  min-height:100px;
+  display:flex;flex-direction:column;
+  gap:8px;
+}
+.card-header{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:7px;letter-spacing:.08em;color:var(--muted);font-weight:400;
+}
+.card-header .badge{
+  font-size:6px;font-weight:700;
+  color:var(--green);letter-spacing:.06em;
+}
+.card-body{flex:1;display:flex;flex-direction:column;gap:6px}
+.card-value{
+  font-family:var(--font-display);font-size:24px;color:var(--paper);letter-spacing:.02em;
+}
+.card-value .green{color:var(--green)}
+.card-value .mint{color:var(--mint)}
+.card-value .cyan{color:var(--cyan)}
+.card-value .amber{color:var(--amber)}
+.card-label{font-size:6px;color:var(--muted);letter-spacing:.1em;font-weight:400}
+.card-row{display:flex;justify-content:space-between;font-size:8px;padding:3px 0;border-bottom:1px solid var(--line)}
+.card-row:last-child{border-bottom:0}
+.card-row .l{color:var(--muted);font-weight:400}
+.card-row .r{color:var(--paper)}
+
+/* NFT Mint Card */
+.mint-card{
+  background:linear-gradient(135deg,var(--bed),rgba(0,200,5,0.05));
+  border:1px solid var(--green);
+  padding:16px;
+  display:flex;flex-direction:column;gap:10px;
+  position:relative;overflow:hidden;
+}
+.mint-card::before{
+  content:'';position:absolute;top:-50%;right:-50%;
+  width:100%;height:100%;
+  background:radial-gradient(circle,rgba(0,200,5,0.06),transparent 70%);
+  pointer-events:none;
+}
+.mint-header{display:flex;justify-content:space-between;align-items:center}
+.mint-title{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--green)}
+.mint-badge{border:1px solid var(--green);font-size:6px;padding:2px 6px;color:var(--green);letter-spacing:.06em;font-weight:700}
+.mint-preview{
+  display:flex;gap:12px;align-items:center;
+  position:relative;z-index:1;
+}
+.mint-frame{
+  width:120px;height:120px;
+  border:1px solid var(--line-hot);
+  background:linear-gradient(135deg,rgba(0,200,5,0.08),rgba(0,200,5,0.02));
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.mint-frame svg{width:60px;height:60px}
+.mint-info{display:flex;flex-direction:column;gap:6px}
+.mint-info-row{display:flex;gap:8px;align-items:center}
+.mint-info-label{font-size:6px;color:var(--muted);letter-spacing:.1em;font-weight:400}
+.mint-info-val{font-size:9px;color:var(--paper)}
+.mint-progress{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:4px}
+.mint-progress-bar{height:100%;background:var(--green);border-radius:2px;width:0%}
+
+/* ── COMMAND LINE ── */
+.command-line{
+  border-top:1px solid var(--cyan);
+  background:var(--paper);
+  min-width:0;color:var(--ink);
+  align-items:center;gap:8px;
+  padding:0 10px;font-size:10px;font-weight:600;
+  display:flex;
+  position:sticky;bottom:0;z-index:10;
+}
+.cmd-prompt{color:var(--green);font-weight:700}
+.cmd-input{flex:1;background:0 0;border:0;color:var(--ink);font-size:9px;font-weight:600;padding:4px 0}
+.cmd-input::placeholder{color:rgba(1,0,16,0.3)}
+.cmd-help{color:rgba(1,0,16,0.4);font-size:7px;font-weight:400;margin-left:auto;white-space:nowrap}
+
+/* ── ROOM panels ── */
+.room-panel{display:none}
+.room-panel.active{display:flex;flex-direction:column;gap:5px;padding:5px;min-height:100%}
+
+/* ── MINT ROOM ── */
+.mint-hero{
+  background:var(--bed);border:1px solid var(--line);
+  padding:16px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.mint-hero-title{font-family:var(--font-display);font-size:32px;color:var(--green);letter-spacing:.04em}
+.mint-hero-sub{font-size:8px;color:var(--muted);letter-spacing:.08em;max-width:400px;line-height:1.6}
+.mint-step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:4px}
+.mint-step{
+  background:var(--bed);border:1px solid var(--line);
+  padding:12px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.mint-step-num{
+  font-family:var(--font-display);font-size:28px;color:var(--green);
+  line-height:1;
+}
+.mint-step-label{font-size:8px;font-weight:700;color:var(--paper);letter-spacing:.06em}
+.mint-step-desc{font-size:6px;color:var(--muted);letter-spacing:.06em;font-weight:400;line-height:1.5}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .hero-stats{flex-wrap:wrap;gap:12px}
+  .mint-preview{flex-direction:column}
+  .mint-step-grid{grid-template-columns:1fr}
+  .card-grid{grid-template-columns:1fr}
+  .masthead-tag{display:none}
+  .masthead-session{display:none}
+  .rail-feed{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="terminal-shell">
+
+  <!-- TICKER -->
+  <div class="market-strip" tabindex="0">
+    <div class="ticker-track">
+      <div class="ticker-copy">
+        <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
+        <span><b>◆</b> TICKER <b>$SBCITY</b></span>
+        <span><b>◆</b> SUPPLY <b>—</b></span>
+        <span><b>◆</b> MINT <b>COMING SOON</b></span>
+        <span><b>◆</b> FEE <b>—</b></span>
+        <span><b>◆</b> FLOOR <b>—</b></span>
+        <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
+        <span><b>◆</b> TICKER <b>$SBCITY</b></span>
+        <span><b>◆</b> SUPPLY <b>—</b></span>
+        <span><b>◆</b> MINT <b>COMING SOON</b></span>
+        <span><b>◆</b> FEE <b>—</b></span>
+        <span><b>◆</b> FLOOR <b>—</b></span>
+      </div>
+      <div class="ticker-copy">
+        <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
+        <span><b>◆</b> TICKER <b>$SBCITY</b></span>
+        <span><b>◆</b> SUPPLY <b>—</b></span>
+        <span><b>◆</b> MINT <b>COMING SOON</b></span>
+        <span><b>◆</b> FEE <b>—</b></span>
+        <span><b>◆</b> FLOOR <b>—</b></span>
+        <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
+        <span><b>◆</b> TICKER <b>$SBCITY</b></span>
+        <span><b>◆</b> SUPPLY <b>—</b></span>
+        <span><b>◆</b> MINT <b>COMING SOON</b></span>
+        <span><b>◆</b> FEE <b>—</b></span>
+        <span><b>◆</b> FLOOR <b>—</b></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="masthead-brand">
+      <div class="masthead-logo">SBCITY <span>//</span></div>
+      <div>
+        <div class="masthead-tag">BROKER WORKSTATION // ROBINHOOD CHAIN</div>
+      </div>
+    </div>
+    <div class="masthead-status">
+      <div class="masthead-indicator">
+        <i></i> MARKET LIVE
+      </div>
+      <div class="masthead-session">SESSION 0001-S</div>
+      <button class="terminal-button" disabled>WALLET SOON</button>
+    </div>
+  </header>
+
+  <!-- FUNCTION RAIL -->
+  <nav class="function-rail">
+    <a class="rail-link active" data-room="skyline" href="#"><span class="key">F1</span> SKYLINE</a>
+    <a class="rail-link" data-room="exchange" href="#"><span class="key">F2</span> EXCHANGE</a>
+    <a class="rail-link" data-room="floor" href="#"><span class="key">F3</span> FLOOR</a>
+    <a class="rail-link" data-room="mint" href="#"><span class="key">F4</span> MINT</a>
+    <a class="rail-link" data-room="holders" href="#"><span class="key">F5</span> HOLDERS</a>
+    <a class="rail-link" data-room="docs" href="#"><span class="key">F6</span> DOCS</a>
+    <a class="rail-link" data-room="pool" href="#"><span class="key">F7</span> POOL</a>
+    <div class="rail-feed"><i></i> LIVE // RH ONE</div>
+  </nav>
+
+  <!-- ROOM VIEWPORT -->
+  <div class="room-viewport">
+    <div class="room-screen">
+
+      <!-- ── F1: SKYLINE ── -->
+      <div class="room-panel active" id="room-skyline">
+        <div class="room-page">
+
+          <div class="hero-section">
+            <div class="skyline">
+              <b style="--x:5%;--w:18px;--h:80px;--ant:6px;--aw:4px;--ah:3px;--sw:2px;--sh:10px"></b>
+              <b style="--x:14%;--w:12px;--h:50px;--ant:4px;--aw:3px;--ah:2px;--sw:1px;--sh:6px"></b>
+              <b style="--x:20%;--w:22px;--h:120px;--ant:8px;--aw:6px;--ah:4px;--sw:2px;--sh:14px"></b>
+              <b style="--x:34%;--w:15px;--h:65px;--ant:5px;--aw:4px;--ah:3px;--sw:2px;--sh:8px"></b>
+              <b style="--x:40%;--w:28px;--h:140px;--ant:10px;--aw:8px;--ah:5px;--sw:3px;--sh:16px"></b>
+              <b style="--x:56%;--w:10px;--h:40px;--ant:3px;--aw:3px;--ah:2px;--sw:1px;--sh:5px"></b>
+              <b style="--x:62%;--w:20px;--h:95px;--ant:7px;--aw:5px;--ah:3px;--sw:2px;--sh:12px"></b>
+              <b style="--x:75%;--w:16px;--h:70px;--ant:5px;--aw:4px;--ah:3px;--sw:2px;--sh:8px"></b>
+              <b style="--x:84%;--w:24px;--h:110px;--ant:8px;--aw:6px;--ah:4px;--sw:2px;--sh:12px"></b>
+              <b style="--x:94%;--w:14px;--h:55px;--ant:4px;--aw:3px;--ah:2px;--sw:1px;--sh:6px"></b>
+            </div>
+            <div class="hero-title">STOCK<em>BROKER</em>CITY</div>
+            <div class="hero-sub">THE STOCK DIVIDEND METROPOLIS // MINT NFTs WITH $SBCITY TOKEN</div>
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <span class="hero-stat-val">—</span>
+                <span class="hero-stat-label">SUPPLY</span>
+              </div>
+              <div class="hero-stat">
+                <span class="hero-stat-val">—</span>
+                <span class="hero-stat-label">MARKET CAP</span>
+              </div>
+              <div class="hero-stat">
+                <span class="hero-stat-val">—</span>
+                <span class="hero-stat-label">NFT MINTED</span>
+              </div>
+              <div class="hero-stat">
+                <span class="hero-stat-val">—</span>
+                <span class="hero-stat-label">HOLDERS</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-grid">
+            <div class="card">
+              <div class="card-header"><span>TOKEN</span><span class="badge">$SBCITY</span></div>
+              <div class="card-body">
+                <div class="card-value amber">—</div>
+                <div class="card-label">PRICE</div>
+                <div class="card-row"><span class="l">CONTRACT</span><span class="r">— SOON —</span></div>
+                <div class="card-row"><span class="l">SUPPLY</span><span class="r">—</span></div>
+                <div class="card-row"><span class="l">DECIMALS</span><span class="r">18</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span>NFT MINT</span><span class="badge">PRE-SALE</span></div>
+              <div class="card-body">
+                <div class="card-value green">COMING</div>
+                <div class="card-label">MINT WITH $SBCITY TOKEN</div>
+                <div class="card-row"><span class="l">PRICE</span><span class="r">—</span></div>
+                <div class="card-row"><span class="l">MAX SUPPLY</span><span class="r">—</span></div>
+                <div class="card-row"><span class="l">MINTED</span><span class="r">0</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span>DIVIDENDS</span><span class="badge">FEE SHARE</span></div>
+              <div class="card-body">
+                <div class="card-value">—</div>
+                <div class="card-label">ACCUMULATED</div>
+                <div class="card-row"><span class="l">FEE</span><span class="r">—</span></div>
+                <div class="card-row"><span class="l">HOLDERS</span><span class="r">—</span></div>
+                <div class="card-row"><span class="l">DISTRIBUTED</span><span class="r">—</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── F2: EXCHANGE ── -->
+      <div class="room-panel" id="room-exchange">
+        <div class="room-page">
+          <div class="card">
+            <div class="card-header"><span>EXCHANGE</span><span class="badge">$SBCITY</span></div>
+            <div class="card-body">
+              <div class="card-value amber">—</div>
+              <div class="card-label">TOKEN DATA COMING AT LAUNCH</div>
+              <div class="card-row"><span class="l">CONTRACT</span><span class="r">— SOON —</span></div>
+              <div class="card-row"><span class="l">CHAIN</span><span class="r">ROBINHOOD (4663)</span></div>
+              <div class="card-row"><span class="l">PLATFORM</span><span class="r">PONSFAMILY</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── F3: FLOOR ── -->
+      <div class="room-panel" id="room-floor">
+        <div class="room-page">
+          <div class="card">
+            <div class="card-header"><span>TRADING FLOOR</span><span class="badge">LIVE</span></div>
+            <div class="card-body">
+              <div class="card-value green">—</div>
+              <div class="card-label">TRADING DATA COMING AT LAUNCH</div>
+              <div style="margin-top:8px;font-size:7px;color:var(--muted);font-weight:400;line-height:1.6">
+                The StockBrokerCity trading floor monitors all $SBCITY activity in real-time.
+                Volume, trades, buys, sells — every transaction visible on-chain.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── F4: MINT ── -->
+      <div class="room-panel" id="room-mint">
+        <div class="room-page">
+          <div class="mint-hero">
+            <div class="mint-hero-title">STOCKBROKERCITY // MINT</div>
+            <div class="mint-hero-sub">
+              Mint your StockBrokerCity NFT using $SBCITY token. Each NFT represents
+              a share in the city — entitling holders to fee dividends, governance rights,
+              and exclusive access to the StockBroker ecosystem.
+            </div>
+          </div>
+
+          <div class="mint-step-grid">
+            <div class="mint-step">
+              <span class="mint-step-num">01</span>
+              <span class="mint-step-label">ACQUIRE $SBCITY</span>
+              <span class="mint-step-desc">Buy $SBCITY tokens on Ponsfamily launchpad once launched</span>
+            </div>
+            <div class="mint-step">
+              <span class="mint-step-num">02</span>
+              <span class="mint-step-label">CONNECT WALLET</span>
+              <span class="mint-step-desc">Connect your Robinhood Chain wallet to mint your NFT</span>
+            </div>
+            <div class="mint-step">
+              <span class="mint-step-num">03</span>
+              <span class="mint-step-label">MINT NFT</span>
+              <span class="mint-step-desc">Pay with $SBCITY tokens &amp; receive your unique city NFT</span>
+            </div>
+          </div>
+
+          <div class="mint-card">
+            <div class="mint-header">
+              <span class="mint-title">MINT YOUR CITY NFT</span>
+              <span class="mint-badge">COMING SOON</span>
+            </div>
+            <div class="mint-preview">
+              <div class="mint-frame">
+                <svg viewBox="0 0 60 60" fill="none">
+                  <rect width="60" height="60" fill="rgba(0,200,5,0.05)" rx="4"/>
+                  <rect x="10" y="25" width="8" height="25" fill="rgba(0,200,5,0.3)" rx="1"/>
+                  <rect x="20" y="15" width="12" height="35" fill="rgba(0,200,5,0.4)" rx="1"/>
+                  <rect x="34" y="20" width="10" height="30" fill="rgba(0,200,5,0.35)" rx="1"/>
+                  <rect x="46" y="28" width="6" height="22" fill="rgba(0,200,5,0.25)" rx="1"/>
+                  <rect x="22" y="18" width="3" height="4" fill="rgba(0,200,5,0.5)" rx="0.5"/>
+                  <rect x="27" y="18" width="3" height="4" fill="rgba(0,200,5,0.5)" rx="0.5"/>
+                  <rect x="36" y="23" width="3" height="4" fill="rgba(0,200,5,0.5)" rx="0.5"/>
+                  <rect x="41" y="23" width="3" height="4" fill="rgba(0,200,5,0.5)" rx="0.5"/>
+                  <rect x="12" y="28" width="2" height="3" fill="rgba(0,200,5,0.5)" rx="0.5"/>
+                  <rect x="15" y="28" width="2" height="3" fill="rgba(0,200,5,0.5)" rx="0.5"/>
+                  <text x="30" y="52" text-anchor="middle" fill="rgba(0,200,5,0.4)" font-size="6" font-family="monospace">SBCITY</text>
+                </svg>
+              </div>
+              <div class="mint-info">
+                <div class="mint-info-row">
+                  <span class="mint-info-label">PRICE</span>
+                  <span class="mint-info-val">—</span>
+                </div>
+                <div class="mint-info-row">
+                  <span class="mint-info-label">REMAINING</span>
+                  <span class="mint-info-val">—</span>
+                </div>
+                <div class="mint-info-row">
+                  <span class="mint-info-label">YOUR BALANCE</span>
+                  <span class="mint-info-val">—</span>
+                </div>
+                <div style="margin-top:4px">
+                  <span class="mint-info-label">MINT PROGRESS</span>
+                  <div class="mint-progress"><div class="mint-progress-bar" style="width:0%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── F5: HOLDERS ── -->
+      <div class="room-panel" id="room-holders">
+        <div class="room-page">
+          <div class="card">
+            <div class="card-header"><span>HOLDERS</span><span class="badge">$SBCITY</span></div>
+            <div class="card-body">
+              <div class="card-value green">—</div>
+              <div class="card-label">HOLDER DATA COMING AT LAUNCH</div>
+              <div style="margin-top:8px;font-size:7px;color:var(--muted);font-weight:400;line-height:1.6">
+                Top holders, distribution, and holder activity will be visible here once
+                the $SBCITY token is deployed on Robinhood Chain.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── F6: DOCS ── -->
+      <div class="room-panel" id="room-docs">
+        <div class="room-page">
+          <div class="mint-hero">
+            <div class="mint-hero-title">STOCKBROKERCITY // DOCS</div>
+            <div class="mint-hero-sub">THE STOCK DIVIDEND METROPOLIS ON ROBINHOOD CHAIN</div>
+          </div>
+          <div class="card-grid">
+            <div class="card">
+              <div class="card-header"><span>MECHANISM</span></div>
+              <div class="card-body" style="font-size:7px;font-weight:400;color:var(--muted);line-height:1.7;gap:6px">
+                <div><b style="color:var(--green)">01</b> Trade $SBCITY generates fees (1-3%)</div>
+                <div><b style="color:var(--green)">02</b> Fee pool accumulates in the city treasury</div>
+                <div><b style="color:var(--green)">03</b> Treasury buys back $SBCITY / distributes to NFT holders</div>
+                <div><b style="color:var(--green)">04</b> NFT holders receive dividends automatically</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span>SUPPLY</span></div>
+              <div class="card-body" style="font-size:7px;font-weight:400;color:var(--muted);line-height:1.7;gap:6px">
+                <div class="card-row"><span class="l">TOKEN</span><span class="r">$SBCITY</span></div>
+                <div class="card-row"><span class="l">NFT COLLECTION</span><span class="r">STOCKBROKERCITY</span></div>
+                <div class="card-row"><span class="l">CHAIN</span><span class="r">ROBINHOOD (4663)</span></div>
+                <div style="margin-top:4px;color:var(--muted)">
+                  Full documentation and whitepaper published at launch.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── F7: POOL ── -->
+      <div class="room-panel" id="room-pool">
+        <div class="room-page">
+          <div class="card">
+            <div class="card-header"><span>LIQUIDITY POOL</span><span class="badge">SOON</span></div>
+            <div class="card-body">
+              <div class="card-value green">—</div>
+              <div class="card-label">POOL DATA COMING AT LAUNCH</div>
+              <div style="margin-top:8px;font-size:7px;color:var(--muted);font-weight:400;line-height:1.6">
+                The StockBrokerCity liquidity pool powers all trading on Ponsfamily.
+                Fee distribution, pool composition, and locking status displayed here.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- COMMAND LINE -->
+  <div class="command-line">
+    <span class="cmd-prompt">SBCITY$</span>
+    <input class="cmd-input" type="text" placeholder="type help for commands..." readonly disabled />
+    <span class="cmd-help">F1-F7 NAV // MINT: SOON</span>
+  </div>
+
+</div>
+
+<script>
+// ── Room navigation ──
+const rails = document.querySelectorAll('.rail-link');
+const panels = {
+  skyline: document.getElementById('room-skyline'),
+  exchange: document.getElementById('room-exchange'),
+  floor: document.getElementById('room-floor'),
+  mint: document.getElementById('room-mint'),
+  holders: document.getElementById('room-holders'),
+  docs: document.getElementById('room-docs'),
+  pool: document.getElementById('room-pool'),
+};
+
+rails.forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const room = link.dataset.room;
+    if (!room || !panels[room]) return;
+    rails.forEach(r => r.classList.remove('active'));
+    link.classList.add('active');
+    Object.values(panels).forEach(p => { if (p) p.classList.remove('active') });
+    panels[room].classList.add('active');
+  });
+});
+
+// Keyboard shortcuts F1-F7
+document.addEventListener('keydown', e => {
+  const fMap = {F1:'skyline',F2:'exchange',F3:'floor',F4:'mint',F5:'holders',F6:'docs',F7:'pool'};
+  const room = fMap[e.key];
+  if (room && panels[room]) {
+    e.preventDefault();
+    const target = document.querySelector(`.rail-link[data-room="${room}"]`);
+    if (target) target.click();
+  }
+});
+</script>
+</body>
+</html>
