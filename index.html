@@ -129,9 +129,13 @@ img{display:block;max-width:100%}
   position:relative;z-index:5;
   display:grid;
   grid-template-rows:36px 68px 46px minmax(0,1fr) 40px;
-  width:100%;min-height:100svh;max-height:100svh;
+  grid-template-columns:minmax(0,1fr);
+  width:100%;min-width:0;max-width:100%;
+  min-height:100vh;min-height:100svh;
+  max-height:100vh;max-height:100svh;
   isolation:isolate;
 }
+.terminal-shell > *{min-width:0}
 .terminal-shell::after{ /* CRT scanline */
   content:"";z-index:40;pointer-events:none;position:fixed;inset:0;
   background-image:repeating-linear-gradient(#0000 0 3px, rgba(11,14,17,.05) 3px 4px);
@@ -158,8 +162,9 @@ img{display:block;max-width:100%}
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   justify-content:space-between;align-items:center;
   padding:8px 18px;display:flex;gap:12px;
+  min-width:0;flex-wrap:wrap;
 }
-.masthead-brand{display:flex;align-items:center;gap:14px;min-width:0}
+.masthead-brand{display:flex;align-items:center;gap:14px;min-width:0;flex:1 1 auto}
 .masthead-logo{
   font-family:var(--font-px);
   font-size:19px;letter-spacing:.02em;
@@ -169,11 +174,11 @@ img{display:block;max-width:100%}
 }
 .masthead-logo span{color:var(--paper);opacity:.85;font-family:var(--font-mono);font-weight:400;font-size:13px}
 .masthead-tag{color:var(--muted);font-size:12px;letter-spacing:.1em;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.masthead-status{display:flex;align-items:center;gap:16px;flex-shrink:0}
-.masthead-indicator{display:flex;align-items:center;gap:8px;color:var(--acid);font-size:12px;letter-spacing:.08em;font-weight:700}
+.masthead-status{display:flex;align-items:center;gap:16px;flex-shrink:0;margin-left:auto}
+.masthead-indicator{display:flex;align-items:center;gap:8px;color:var(--acid);font-size:12px;letter-spacing:.08em;font-weight:700;white-space:nowrap}
 .masthead-indicator i{width:8px;height:8px;border-radius:50%;background:var(--acid);box-shadow:0 0 10px var(--acid);animation:pulse 1.8s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.masthead-session{color:var(--muted);font-size:12px;font-weight:400}
+.masthead-session{color:var(--muted);font-size:12px;font-weight:400;white-space:nowrap}
 .terminal-button{
   border:1px solid var(--acid);
   background:rgba(196,242,38,.12);
@@ -181,7 +186,7 @@ img{display:block;max-width:100%}
   letter-spacing:.08em;
   justify-content:center;align-items:center;
   padding:6px 14px;font-size:13px;font-weight:700;
-  transition:all .15s;
+  transition:all .15s;white-space:nowrap;
 }
 .terminal-button:hover:not(:disabled){
   background:var(--acid);color:var(--ink);
@@ -242,11 +247,12 @@ img{display:block;max-width:100%}
 }
 .hero-title{
   font-family:var(--font-px);
-  font-size:clamp(22px,4.4vw,42px);
-  line-height:1.25;letter-spacing:.03em;
+  font-size:clamp(20px,3.6vw,42px);
+  line-height:1.3;letter-spacing:.03em;
   color:var(--paper);
   position:relative;z-index:2;
   text-shadow:0 0 34px rgba(0,200,5,.35), 3px 3px 0 rgba(11,14,17,.55);
+  overflow-wrap:break-word;word-break:break-word;max-width:100%;
 }
 .hero-title em{color:var(--acid);font-style:normal}
 .hero-sub{
@@ -366,13 +372,13 @@ img{display:block;max-width:100%}
   color:var(--paper);
   align-items:center;gap:12px;
   padding:0 16px;font-size:15px;font-weight:600;
-  display:flex;
+  display:flex;min-width:0;
   position:sticky;bottom:0;z-index:10;
 }
-.cmd-prompt{color:var(--acid);font-weight:700;font-family:var(--font-px);font-size:12px}
-.cmd-input{flex:1;background:0 0;border:0;color:var(--paper);font-size:15px;font-weight:500;padding:6px 0}
-.cmd-input::placeholder{color:rgba(255,253,245,.35)}
-.cmd-help{color:var(--muted);font-size:12px;font-weight:400;margin-left:auto;white-space:nowrap}
+.cmd-prompt{color:var(--acid);font-weight:700;font-family:var(--font-px);font-size:12px;flex-shrink:0}
+.cmd-input{flex:1;min-width:0;background:0 0;border:0;color:var(--paper);font-size:15px;font-weight:500;padding:6px 0}
+.cmd-input::placeholder{color:rgba(255,253,245,.35);overflow:hidden;text-overflow:ellipsis}
+.cmd-help{color:var(--muted);font-size:12px;font-weight:400;margin-left:auto;white-space:nowrap;flex-shrink:0}
 
 /* ── RESPONSIVE ── */
 @media(max-width:720px){
@@ -385,6 +391,33 @@ img{display:block;max-width:100%}
   .masthead-session{display:none}
   .rail-feed{display:none}
   .room-page,.room-panel.active{padding:10px}
+  .masthead{padding:6px 10px;gap:8px;flex-wrap:nowrap}
+  .masthead-logo{font-size:15px}
+  .masthead-logo span{display:none}
+  .masthead-status{gap:8px}
+  .terminal-button{min-height:30px;padding:4px 10px;font-size:12px}
+  .market-strip{font-size:12px;line-height:33px}
+  .rail-link{padding:0 12px;font-size:12px}
+  .rail-link .key{font-size:9px}
+  .cmd-help{display:none}
+  .cmd-prompt{font-size:10px}
+  .hero-title{font-size:clamp(18px,4.8vw,30px)}
+  .hero-sub{font-size:12px;letter-spacing:.06em}
+  .hero-stat-val{font-size:26px}
+  .hero-section{padding:18px 14px;min-height:240px}
+  .card{padding:12px 12px}
+  .card-value{font-size:28px}
+  .mint-hero{padding:18px 14px}
+  .mint-step{padding:14px 10px}
+  .sun{top:6%;right:6%;width:110px}
+  .skyline{height:44vh}
+  .bldg .billboard{font-size:6px;height:16px}
+  .cloud{height:18px}
+}
+@media(max-width:380px){
+  .masthead-indicator{font-size:10px}
+  .terminal-button{padding:4px 8px;font-size:11px}
+  .masthead-logo{font-size:13px}
 }
 </style>
 </head>
