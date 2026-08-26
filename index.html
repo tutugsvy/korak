@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#00C805" />
+<link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
 <title>STOCKBROKERCITY // SBCITY</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -211,6 +212,12 @@ img{display:block;max-width:100%}
   white-space:nowrap;
 }
 .masthead-logo span{color:var(--paper);opacity:.85;font-family:var(--font-mono);font-weight:400;font-size:13px}
+.masthead-logo-img{
+  height:40px;width:auto;display:block;flex-shrink:0;
+  border-radius:5px;
+  border:1px solid rgba(196,242,38,.35);
+  box-shadow:0 0 20px rgba(196,242,38,.25);
+}
 .masthead-tag{color:var(--muted);font-size:12px;letter-spacing:.1em;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .masthead-status{display:flex;align-items:center;gap:16px;flex-shrink:0;margin-left:auto}
 .masthead-indicator{display:flex;align-items:center;gap:8px;color:var(--acid);font-size:12px;letter-spacing:.08em;font-weight:700;white-space:nowrap}
@@ -271,6 +278,21 @@ img{display:block;max-width:100%}
 .room-page{padding:16px;min-height:100%;display:flex;flex-direction:column;gap:14px}
 .room-panel{display:none}
 .room-panel.active{display:flex;flex-direction:column;gap:14px;padding:16px;min-height:100%}
+
+/* ── HERO COVER BANNER (F1) ── */
+.hero-cover-wrap{
+  position:relative;width:100%;border-radius:8px;overflow:hidden;
+  border:1px solid var(--line);
+  box-shadow:0 0 30px rgba(0,200,5,.2);
+}
+.hero-cover{
+  width:100%;height:auto;display:block;min-height:0;
+}
+.hero-cover-wrap::after{ /* subtle bottom fade into room bg */
+  content:"";position:absolute;inset:auto 0 0 0;height:34%;
+  background:linear-gradient(180deg, transparent, rgba(11,14,17,.45));
+  pointer-events:none;
+}
 
 /* ── HERO (F1 skyline room: see-through over the city) ── */
 .hero-section{
@@ -435,6 +457,7 @@ img{display:block;max-width:100%}
   .room-page,.room-panel.active{padding:10px}
   .masthead{padding:6px 10px;gap:8px;flex-wrap:nowrap}
   .masthead-logo{font-size:15px}
+  .masthead-logo-img{height:30px;border-radius:4px}
   .masthead-logo span{display:none}
   .masthead-status{gap:8px}
   .terminal-button{min-height:30px;padding:4px 10px;font-size:12px}
@@ -460,6 +483,7 @@ img{display:block;max-width:100%}
   .masthead-indicator{font-size:10px}
   .terminal-button{padding:4px 8px;font-size:11px}
   .masthead-logo{font-size:13px}
+  .masthead-logo-img{height:26px}
 }
 </style>
 </head>
@@ -541,7 +565,7 @@ img{display:block;max-width:100%}
   <!-- MASTHEAD -->
   <header class="masthead">
     <div class="masthead-brand">
-      <div class="masthead-logo">STOCKCITY <span>// SBCITY</span></div>
+      <img class="masthead-logo-img" src="assets/logo.jpg" alt="STOCKBROKERCITY">
       <div>
         <div class="masthead-tag">BROKER WORKSTATION // ROBINHOOD CHAIN</div>
       </div>
@@ -572,6 +596,10 @@ img{display:block;max-width:100%}
       <!-- ── F1: SKYLINE ── -->
       <div class="room-panel active" id="room-skyline">
         <div class="room-page">
+
+          <div class="hero-cover-wrap">
+            <img class="hero-cover" src="assets/cover.jpg" alt="STOCKBROKERCITY — THE FEE-SHARE METROPOLIS">
+          </div>
 
           <div class="hero-section">
             <div class="hero-title">STOCK<em>BROKER</em>CITY</div>
