@@ -575,12 +575,15 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-
       // ── STOCKBROKERCITY 3D CITY ──
       (function () {
         var wrap = document.getElementById('city3d-wrap');
         var canvas = document.getElementById('city3d');
         if (!wrap || !canvas) return;
+        function showErr(msg) {
+          var hud = document.getElementById('city3d-hud');
+          if (hud) hud.textContent = '3D ERROR: ' + msg;
+        }
 
         // renderer
         var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
@@ -748,34 +751,44 @@
           camera.aspect = w / h;
           camera.updateProjectionMatrix();
         }
-        resize();
+        try { resize(); } catch (e) { showErr('resize: ' + e.message); }
         if (typeof ResizeObserver !== 'undefined') {
-          new ResizeObserver(resize).observe(wrap);
+          try { new ResizeObserver(resize).observe(wrap); } catch (e) {}
         }
         window.addEventListener('resize', resize);
 
         // ── animate ──
         var clock = new THREE.Clock();
         var t = 0;
+        var frameCount = 0;
         function animate() {
-          requestAnimationFrame(animate);
-          var dt = clock.getDelta();
-          t += dt;
-          // orbit kamera halus
-          var a = t * 0.08;
-          var r = 40;
-          camera.position.x = Math.cos(a) * r;
-          camera.position.z = Math.sin(a) * r;
-          camera.position.y = 16 + Math.sin(t * 0.12) * 3;
-          camera.lookAt(0, 7, 0);
-          // pulsasi lampu
-          greenGlow.intensity = 1.0 + Math.sin(t * 1.4) * 0.3;
-          acidGlow.intensity = 0.7 + Math.sin(t * 2.1 + 1) * 0.25;
-          // twinkle jendela (emissiveIntensity global halus)
-          for (var i = 0; i < materials.length; i++) {
-            materials[i].emissiveIntensity = 0.75 + Math.sin(t * 3 + i * 1.7) * 0.12;
+          try {
+            requestAnimationFrame(animate);
+            var dt = clock.getDelta();
+            t += dt;
+            // orbit kamera halus
+            var a = t * 0.08;
+            var r = 40;
+            camera.position.x = Math.cos(a) * r;
+            camera.position.z = Math.sin(a) * r;
+            camera.position.y = 16 + Math.sin(t * 0.12) * 3;
+            camera.lookAt(0, 7, 0);
+            // pulsasi lampu
+            greenGlow.intensity = 1.0 + Math.sin(t * 1.4) * 0.3;
+            acidGlow.intensity = 0.7 + Math.sin(t * 2.1 + 1) * 0.25;
+            // twinkle jendela (emissiveIntensity global halus)
+            for (var i = 0; i < materials.length; i++) {
+              materials[i].emissiveIntensity = 0.75 + Math.sin(t * 3 + i * 1.7) * 0.12;
+            }
+            renderer.render(scene, camera);
+            frameCount++;
+            if (frameCount === 5) {
+              var hud = document.getElementById('city3d-hud');
+              if (hud) hud.textContent = 'SBCITY // LIVE · RENDERING';
+            }
+          } catch (e) {
+            showErr(e.message);
           }
-          renderer.render(scene, camera);
         }
         animate();
       })();
