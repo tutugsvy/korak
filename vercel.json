@@ -1,1 +1,4 @@
-{"version":2,"framework":null,"buildCommand":"echo 'static site'","outputDirectory":".","cleanUrls":false}
+{"version":2,"framework":null,"buildCommand":"echo 'static site'","outputDirectory":".","cleanUrls":false,
+"headers":[
+  {"source":"/assets/(.*)","headers":[{"key":"X-Robots-Tag","value":"noindex, nofollow"}]}
+]}
