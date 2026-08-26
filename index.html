@@ -928,8 +928,15 @@ document.addEventListener('keydown', e => {
       await switchToRH(provider);
       await updateState(provider);
     } catch(e){
-      if (e && e.code === 4001){ setBtn('CONNECT WALLET',''); }
-      else { setBtn('CONNECT WALLET','err'); console.error('Wallet error', e); }
+      if (e && e.code === 4001){
+        setBtn('CONNECT WALLET','');
+        setIndicator('<i></i> MARKET LIVE');
+      } else {
+        setBtn('CONNECT WALLET','err');
+        console.error('Wallet error', e);
+        // sync to the true wallet state (e.g. wrong network) so the UI is never stuck
+        try { await updateState(provider); } catch(_){ setIndicator('<i></i> MARKET LIVE'); }
+      }
     }
   }
 
