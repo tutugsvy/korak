@@ -1,803 +1,688 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>STOCKBROKERCITY — the fee-share metropolis</title>
-    <meta name="description" content="A fee-share metropolis on Robinhood Chain. 444 city shares. Trade $SBCITY, earn ETH from real fees. 70% to token holders, 90% to NFT holders." />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2300C805' rx='4'/><text x='16' y='24' text-anchor='middle' font-family='monospace' font-size='20' font-weight='bold' fill='%230B0E11'>S</text></svg>" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-    <style>
-      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-      :root {
-        --bg: #0b0e11;
-        --panel: #121316;
-        --line: #1e2025;
-        --muted: #6b7280;
-        --paper: #f2f4f8;
-        --acid: #c4f226;
-        --green: #00C805;
-        --orange: #FF4D00;
-        --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-        --font-px: 'Silkscreen', monospace;
-        --font-sans: system-ui, -apple-system, sans-serif;
-        --grid: 1120px;
-      }
-      html { scroll-behavior: smooth; }
-      body {
-        background: var(--bg);
-        color: var(--paper);
-        font-family: var(--font-mono);
-        font-size: 13px;
-        line-height: 1.6;
-        -webkit-font-smoothing: antialiased;
-      }
-      ::selection { background: var(--acid); color: var(--bg); }
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#010010" />
+<title>STOCKBROKERCITY // SBCITY</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet" />
+<style>
+/* ── RESET ── */
+*,::before,::after{box-sizing:border-box;margin:0;padding:0}
+body,html{min-height:100%;background:#010010;color:#f7f6f8;font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Consolas,monospace;font-size:10px;font-weight:600;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:inherit;text-decoration:none}
+input,button{font:inherit;color:inherit;background:0 0;border:0;outline:0}
+button{cursor:pointer}
+img{display:block;max-width:100%}
 
-      /* ── LAYOUT ── */
-      .station {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        padding: 48px 24px;
-        position: relative;
-        overflow: hidden;
-      }
-      .station-grid {
-        max-width: var(--grid);
-        width: 100%;
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 48px;
-        align-items: center;
-      }
-      .station-visual {
-        aspect-ratio: 1.176;
-        max-width: 70.56vh;
-        width: 100%;
-        border-radius: 8px;
-        overflow: hidden;
-        background: var(--panel);
-        border: 1px solid var(--line);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .station-text { max-width: 46ch; }
-      .station-label {
-        font-family: var(--font-px);
-        font-size: 11px;
-        letter-spacing: 0.12em;
-        color: var(--green);
-        text-transform: uppercase;
-        margin-bottom: 12px;
-      }
-      .station-title {
-        font-family: var(--font-px);
-        font-size: 28px;
-        line-height: 1.1;
-        margin-bottom: 20px;
-        text-transform: uppercase;
-      }
-      .station-desc {
-        font-size: 13.5px;
-        color: var(--muted);
-        line-height: 1.625;
-        margin-bottom: 24px;
-      }
-      .station-desc strong { color: var(--paper); font-weight: 500; }
+/* ── CSS VARS ── */
+:root{
+  --ink:#010010;
+  --bed:#0a1230;
+  --line:#121933;
+  --line-hot:#16204a;
+  --blue:#0052ec;
+  --cyan:#01b3fe;
+  --green:#00C805;
+  --mint:#4ADE80;
+  --paper:#f7f6f8;
+  --muted:#5b6b94;
+  --amber:#ffb454;
+  --red:#ff8d8d;
+  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
+  --font-display:VT323,var(--font-mono);
+}
 
-      @media (max-width: 768px) {
-        .station-grid { grid-template-columns: 1fr; gap: 32px; }
-        .station-visual { max-width: 100%; aspect-ratio: 16/9; }
-        .station-title { font-size: 22px; }
-        .station { min-height: auto; padding: 64px 20px; }
-      }
+/* ── TERMINAL SHELL ── */
+.terminal-shell{
+  background:radial-gradient(circle at 72% 18%,rgba(0,200,5,0.12),transparent 31%),var(--ink);
+  isolation:isolate;
+  grid-template-rows:27px 54px 38px minmax(0,1fr) 34px;
+  width:100%;min-height:100svh;max-height:100svh;
+  display:grid;position:relative;overflow:hidden;
+}
+.terminal-shell::after{
+  z-index:20;pointer-events:none;content:"";
+  background-image:repeating-linear-gradient(#0000 0 3px,rgba(247,246,248,0.02) 3px 4px);
+  position:fixed;inset:0;
+}
 
-      /* ── BUTTONS ── */
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 20px;
-        font-family: var(--font-mono);
-        font-size: 12px;
-        font-weight: 500;
-        border: 1px solid var(--line);
-        border-radius: 4px;
-        cursor: pointer;
-        text-decoration: none;
-        transition: all 0.15s;
-        background: transparent;
-        color: var(--paper);
-      }
-      .btn-primary {
-        background: var(--green);
-        color: var(--bg);
-        border-color: var(--green);
-        font-weight: 700;
-      }
-      .btn-primary:hover { background: #00e806; }
-      .btn-ghost { border-color: var(--line); }
-      .btn-ghost:hover { border-color: var(--muted); }
-      .btn-buy {
-        background: var(--orange);
-        color: #fff;
-        border-color: var(--orange);
-        font-weight: 700;
-      }
-      .btn-buy:hover { background: #ff6a2a; }
-      .btn-sm { padding: 6px 12px; font-size: 11px; }
-      .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+/* ── TICKER ── */
+.market-strip{
+  border-bottom:1px solid var(--green);
+  background:var(--bed);
+  min-width:0;color:var(--paper);
+  white-space:nowrap;font-size:11px;font-weight:600;line-height:26px;overflow:hidden;
+}
+.ticker-track{width:max-content;animation:ticker 34s linear infinite;display:flex}
+.market-strip:hover .ticker-track{animation-play-state:paused}
+.ticker-copy{flex-shrink:0;gap:32px;padding-right:32px;display:flex}
+.ticker-copy span b{color:var(--green);margin-right:8px}
+@keyframes ticker{to{transform:translate(-50%)}}
 
-      /* ── CA CHIP ── */
-      .ca-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 12px;
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 4px;
-        cursor: pointer;
-        font-family: var(--font-mono);
-        font-size: 11px;
-        color: var(--muted);
-        transition: border-color 0.15s;
-      }
-      .ca-chip:hover { border-color: var(--green); }
-      .ca-chip .ca-label { color: var(--green); font-weight: 500; }
-      .ca-chip .ca-hash { color: var(--paper); }
-      .ca-chip .ca-copy { color: var(--muted); font-size: 10px; }
-      .ca-copy-success { color: var(--green) !important; }
+/* ── MASTHEAD ── */
+.masthead{
+  border-bottom:1px solid var(--line);
+  background:var(--bed);
+  justify-content:space-between;align-items:center;
+  padding:6px 12px;display:flex;
+}
+.masthead-brand{display:flex;align-items:center;gap:10px}
+.masthead-logo{
+  font-family:var(--font-display);
+  font-size:22px;letter-spacing:.04em;
+  color:var(--green);text-shadow:0 0 20px rgba(0,200,5,0.3);
+}
+.masthead-logo span{color:var(--paper);font-size:14px;font-family:var(--font-mono);font-weight:400}
+.masthead-tag{color:var(--muted);font-size:7px;letter-spacing:.08em;font-weight:400}
+.masthead-status{display:flex;align-items:center;gap:12px}
+.masthead-indicator{display:flex;align-items:center;gap:6px;color:var(--green);font-size:8px;letter-spacing:.06em}
+.masthead-indicator i{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.masthead-session{color:var(--muted);font-size:7px;font-weight:400}
+.terminal-button{
+  border:1px solid var(--green);
+  background:var(--blue);
+  min-height:27px;color:var(--paper);
+  letter-spacing:.06em;
+  justify-content:center;align-items:center;
+  padding:5px 9px;font-size:8px;font-weight:700;
+  transition:all .15s;
+}
+.terminal-button:hover{
+  background:var(--paper);color:var(--ink);
+  outline:1px solid var(--paper);
+  box-shadow:3px 3px 0 var(--green);
+  transform:translate(-2px,-2px);
+}
 
-      /* ── CONTRACT LIST ── */
-      .contract-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-      .contract-list li {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 12px;
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 4px;
-        font-size: 12px;
-      }
-      .contract-list .name { color: var(--paper); font-weight: 500; min-width: 100px; }
-      .contract-list .addr { color: var(--muted); font-family: var(--font-mono); }
-      .contract-list .copy-btn {
-        margin-left: auto;
-        background: none;
-        border: none;
-        color: var(--muted);
-        cursor: pointer;
-        font-family: var(--font-mono);
-        font-size: 11px;
-        padding: 2px 6px;
-        border-radius: 2px;
-      }
-      .contract-list .copy-btn:hover { color: var(--green); background: rgba(196,242,38,0.1); }
+/* ── FUNCTION RAIL ── */
+.function-rail{
+  border-bottom:1px solid var(--line-hot);
+  background:var(--ink);
+  align-items:stretch;gap:1px;min-width:0;
+  display:flex;overflow-x:auto;
+}
+.rail-link{
+  padding:0 14px;
+  display:flex;align-items:center;gap:6px;
+  font-size:8px;font-weight:700;letter-spacing:.06em;
+  color:var(--muted);white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:all .15s;
+  cursor:pointer;
+}
+.rail-link .key{color:var(--muted);font-weight:400;font-size:7px;font-family:var(--font-display)}
+.rail-link:hover{color:var(--paper);background:rgba(0,200,5,0.05)}
+.rail-link.active{color:var(--green);border-bottom-color:var(--green);background:rgba(0,200,5,0.08)}
+.rail-link.active .key{color:var(--green)}
+.rail-feed{color:var(--muted);font-size:7px;margin-left:auto;padding:0 14px;display:flex;align-items:center;gap:6px}
+.rail-feed i{width:4px;height:4px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
 
-      /* ── HERO ── */
-      #station-entrance {
-        padding-top: 80px;
-        background: linear-gradient(180deg, #0b0e11 0%, #121316 100%);
-      }
-      .hero-title {
-        font-family: var(--font-px);
-        font-size: 40px;
-        line-height: 1.1;
-        text-transform: uppercase;
-        margin-bottom: 8px;
-      }
-      .hero-title .accent { color: var(--green); }
-      .hero-sub {
-        font-size: 13px;
-        color: var(--muted);
-        margin-bottom: 32px;
-        max-width: 400px;
-      }
-      @media (max-width: 768px) {
-        .hero-title { font-size: 28px; }
-      }
+/* ── ROOM VIEWPORT ── */
+.room-viewport{overflow:hidden;position:relative}
+.room-screen{height:100%;overflow:auto}
+.room-screen::-webkit-scrollbar{width:4px}
+.room-screen::-webkit-scrollbar-track{background:var(--ink)}
+.room-screen::-webkit-scrollbar-thumb{background:var(--line-hot)}
 
-      /* ── STATS BAR ── */
-      .stats-bar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 100;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 8px 20px;
-        background: rgba(11,14,17,0.92);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid var(--line);
-        font-size: 11px;
-      }
-      .stats-bar .brand { font-family: var(--font-px); color: var(--acid); font-size: 14px; }
-      .stats-bar .chain { color: var(--green); }
-      .stats-bar .right { display: flex; align-items: center; gap: 16px; }
-      .stats-bar .right a { color: var(--muted); text-decoration: none; }
-      .stats-bar .right a:hover { color: var(--paper); }
-      #wallet-btn {
-        padding: 4px 12px;
-        font-family: var(--font-mono);
-        font-size: 10px;
-        border: 1px solid var(--line);
-        border-radius: 4px;
-        background: transparent;
-        color: var(--paper);
-        cursor: pointer;
-      }
-      #wallet-btn:hover { border-color: var(--green); }
-      #wallet-btn.connected { color: var(--green); border-color: var(--green); }
+/* ── ROOM PAGE ── */
+.room-page{padding:5px;min-height:100%;display:flex;flex-direction:column;gap:5px}
 
-      /* ── FOOTER ── */
-      .footer {
-        padding: 32px 24px;
-        border-top: 1px solid var(--line);
-        text-align: center;
-        font-size: 11px;
-        color: var(--muted);
-      }
-      .footer .links { display: flex; justify-content: center; gap: 20px; margin-bottom: 8px; }
-      .footer .links a { color: var(--muted); text-decoration: none; }
-      .footer .links a:hover { color: var(--paper); }
+/* Hero section with city skyline */
+.hero-section{
+  position:relative;
+  background:var(--bed);
+  border:1px solid var(--line);
+  padding:20px;
+  min-height:220px;
+  overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-end;
+}
+.hero-section::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,var(--bed) 95%);
+  z-index:1;
+}
+.hero-title{
+  font-family:var(--font-display);
+  font-size:clamp(28px,5vw,48px);
+  letter-spacing:.06em;
+  color:var(--paper);
+  position:relative;z-index:2;
+  text-shadow:0 0 40px rgba(0,200,5,0.2);
+}
+.hero-title em{color:var(--green);font-style:normal}
+.hero-sub{
+  font-size:8px;color:var(--muted);letter-spacing:.08em;
+  margin-top:4px;position:relative;z-index:2;
+}
+.hero-stats{
+  display:flex;gap:24px;margin-top:14px;position:relative;z-index:2;
+}
+.hero-stat{display:flex;flex-direction:column;gap:2px}
+.hero-stat-val{font-size:16px;font-weight:700;color:var(--green);font-family:var(--font-display);letter-spacing:.04em}
+.hero-stat-label{font-size:6px;color:var(--muted);letter-spacing:.1em;font-weight:400}
 
-      /* ── VISUAL PLACEHOLDER ── */
-      .visual-skyline { width: 100%; height: 100%; display: flex; align-items: flex-end; justify-content: center; padding: 10%; gap: 2%; }
-      .visual-skyline .bldg { background: var(--line); border-radius: 2px 2px 0 0; flex: 1; }
-      .visual-skyline .bldg:nth-child(1) { height: 40%; }
-      .visual-skyline .bldg:nth-child(2) { height: 65%; }
-      .visual-skyline .bldg:nth-child(3) { height: 50%; }
-      .visual-skyline .bldg:nth-child(4) { height: 75%; background: var(--green); }
-      .visual-skyline .bldg:nth-child(5) { height: 35%; }
-      .visual-skyline .bldg:nth-child(6) { height: 55%; }
-      .visual-skyline .bldg:nth-child(7) { height: 45%; }
-      .visual-skyline .bldg:nth-child(8) { height: 60%; }
-      .visual-skyline .bldg:nth-child(9) { height: 30%; }
-      .visual-skyline .bldg:nth-child(10) { height: 70%; background: var(--acid); }
-      .visual-skyline .bldg .window { width: 20%; height: 6%; margin: 8% auto 0; border-radius: 1px; background: rgba(196,242,38,0.4); }
-      .visual-skyline .bldg:nth-child(4) .window { background: rgba(0,200,5,0.6); }
-      .visual-skyline .bldg:nth-child(10) .window { background: rgba(196,242,38,0.6); }
+/* CSS City Skyline */
+.skyline{
+  position:absolute;bottom:0;left:0;right:0;height:140px;
+  z-index:0;opacity:.15;
+}
+.skyline b{
+  position:absolute;bottom:0;
+  background:var(--green);
+  width:var(--w);
+  height:var(--h);
+  left:var(--x);
+  border-radius:2px 2px 0 0;
+}
+.skyline b::before{
+  content:'';position:absolute;top:var(--ant,10px);
+  left:50%;transform:translateX(-50%);
+  width:var(--aw,6px);height:var(--ah,4px);
+  background:rgba(0,200,5,0.3);
+  border-radius:1px;
+}
+.skyline b::after{
+  content:'';position:absolute;top:4px;left:50%;transform:translateX(-50%);
+  width:var(--sw,2px);height:var(--sh,6px);
+  background:rgba(0,200,5,0.2);
+  border-radius:1px;
+}
 
-      /* ── THREE.JS CITY ── */
-      #city3d-wrap { position: relative; overflow: hidden; }
-      #city3d {
-        width: 100%; height: 100%;
-        display: block;
-        position: absolute; top: 0; left: 0;
-      }
-      .city3d-hud {
-        position: absolute; bottom: 16px; left: 50%;
-        transform: translateX(-50%);
-        font-family: var(--font-px); font-size: 10px; letter-spacing: 0.12em;
-        color: rgba(0,200,5,0.6);
-        text-shadow: 0 0 12px rgba(0,200,5,0.3);
-        pointer-events: none;
-        z-index: 2;
-      }
-    </style>
-  </head>
-  <body>
+/* Cards grid */
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:5px;
+}
+.card{
+  background:var(--bed);
+  border:1px solid var(--line);
+  padding:12px 14px;
+  min-height:100px;
+  display:flex;flex-direction:column;
+  gap:8px;
+}
+.card-header{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:7px;letter-spacing:.08em;color:var(--muted);font-weight:400;
+}
+.card-header .badge{
+  font-size:6px;font-weight:700;
+  color:var(--green);letter-spacing:.06em;
+}
+.card-body{flex:1;display:flex;flex-direction:column;gap:6px}
+.card-value{
+  font-family:var(--font-display);font-size:24px;color:var(--paper);letter-spacing:.02em;
+}
+.card-value .green{color:var(--green)}
+.card-value .mint{color:var(--mint)}
+.card-value .cyan{color:var(--cyan)}
+.card-value .amber{color:var(--amber)}
+.card-label{font-size:6px;color:var(--muted);letter-spacing:.1em;font-weight:400}
+.card-row{display:flex;justify-content:space-between;font-size:8px;padding:3px 0;border-bottom:1px solid var(--line)}
+.card-row:last-child{border-bottom:0}
+.card-row .l{color:var(--muted);font-weight:400}
+.card-row .r{color:var(--paper)}
 
-    <!-- ═══ STATS BAR ═══ -->
-    <div class="stats-bar">
-      <span class="brand">STOCKBROKERCITY</span>
-      <span class="chain">ROBINHOOD CHAIN 4663</span>
-      <div class="right">
-        <a href="https://www.ponsfamily.com/launchpad/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">BUY</a>
-        <a href="https://x.com/" target="_blank" rel="noopener">X</a>
-        <button id="wallet-btn">CONNECT WALLET</button>
+/* NFT Mint Card */
+.mint-card{
+  background:linear-gradient(135deg,var(--bed),rgba(0,200,5,0.05));
+  border:1px solid var(--green);
+  padding:16px;
+  display:flex;flex-direction:column;gap:10px;
+  position:relative;overflow:hidden;
+}
+.mint-card::before{
+  content:'';position:absolute;top:-50%;right:-50%;
+  width:100%;height:100%;
+  background:radial-gradient(circle,rgba(0,200,5,0.06),transparent 70%);
+  pointer-events:none;
+}
+.mint-header{display:flex;justify-content:space-between;align-items:center}
+.mint-title{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--green)}
+.mint-badge{border:1px solid var(--green);font-size:6px;padding:2px 6px;color:var(--green);letter-spacing:.06em;font-weight:700}
+.mint-preview{
+  display:flex;gap:12px;align-items:center;
+  position:relative;z-index:1;
+}
+.mint-frame{
+  width:120px;height:120px;
+  border:1px solid var(--line-hot);
+  background:linear-gradient(135deg,rgba(0,200,5,0.08),rgba(0,200,5,0.02));
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.mint-frame svg{width:60px;height:60px}
+.mint-info{display:flex;flex-direction:column;gap:6px}
+.mint-info-row{display:flex;gap:8px;align-items:center}
+.mint-info-label{font-size:6px;color:var(--muted);letter-spacing:.1em;font-weight:400}
+.mint-info-val{font-size:9px;color:var(--paper)}
+.mint-progress{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:4px}
+.mint-progress-bar{height:100%;background:var(--green);border-radius:2px;width:0%}
+
+/* ── COMMAND LINE ── */
+.command-line{
+  border-top:1px solid var(--cyan);
+  background:var(--paper);
+  min-width:0;color:var(--ink);
+  align-items:center;gap:8px;
+  padding:0 10px;font-size:10px;font-weight:600;
+  display:flex;
+  position:sticky;bottom:0;z-index:10;
+}
+.cmd-prompt{color:var(--green);font-weight:700}
+.cmd-input{flex:1;background:0 0;border:0;color:var(--ink);font-size:9px;font-weight:600;padding:4px 0}
+.cmd-input::placeholder{color:rgba(1,0,16,0.3)}
+.cmd-help{color:rgba(1,0,16,0.4);font-size:7px;font-weight:400;margin-left:auto;white-space:nowrap}
+
+/* ── ROOM panels ── */
+.room-panel{display:none}
+.room-panel.active{display:flex;flex-direction:column;gap:5px;padding:5px;min-height:100%}
+
+/* ── MINT ROOM ── */
+.mint-hero{
+  background:var(--bed);border:1px solid var(--line);
+  padding:16px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.mint-hero-title{font-family:var(--font-display);font-size:32px;color:var(--green);letter-spacing:.04em}
+.mint-hero-sub{font-size:8px;color:var(--muted);letter-spacing:.08em;max-width:400px;line-height:1.6}
+.mint-step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:4px}
+.mint-step{
+  background:var(--bed);border:1px solid var(--line);
+  padding:12px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.mint-step-num{
+  font-family:var(--font-display);font-size:28px;color:var(--green);
+  line-height:1;
+}
+.mint-step-label{font-size:8px;font-weight:700;color:var(--paper);letter-spacing:.06em}
+.mint-step-desc{font-size:6px;color:var(--muted);letter-spacing:.06em;font-weight:400;line-height:1.5}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .hero-stats{flex-wrap:wrap;gap:12px}
+  .mint-preview{flex-direction:column}
+  .mint-step-grid{grid-template-columns:1fr}
+  .card-grid{grid-template-columns:1fr}
+  .masthead-tag{display:none}
+  .masthead-session{display:none}
+  .rail-feed{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="terminal-shell">
+
+  <!-- TICKER -->
+  <div class="market-strip" tabindex="0">
+    <div class="ticker-track">
+      <div class="ticker-copy">
+        <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
+        <span><b>◆</b> TICKER <b>$SBCITY</b></span>
+        <span><b>◆</b> SUPPLY <b>—</b></span>
+        <span><b>◆</b> MINT <b>COMING SOON</b></span>
+        <span><b>◆</b> FEE <b>—</b></span>
+        <span><b>◆</b> FLOOR <b>—</b></span>
+        <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
+        <span><b>◆</b> TICKER <b>$SBCITY</b></span>
+        <span><b>◆</b> SUPPLY <b>—</b></span>
+        <span><b>◆</b> MINT <b>COMING SOON</b></span>
+        <span><b>◆</b> FEE <b>—</b></span>
+        <span><b>◆</b> FLOOR <b>—</b></span>
+      </div>
+      <div class="ticker-copy">
+        <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
+        <span><b>◆</b> TICKER <b>$SBCITY</b></span>
+        <span><b>◆</b> SUPPLY <b>—</b></span>
+        <span><b>◆</b> MINT <b>COMING SOON</b></span>
+        <span><b>◆</b> FEE <b>—</b></span>
+        <span><b>◆</b> FLOOR <b>—</b></span>
+        <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
+        <span><b>◆</b> TICKER <b>$SBCITY</b></span>
+        <span><b>◆</b> SUPPLY <b>—</b></span>
+        <span><b>◆</b> MINT <b>COMING SOON</b></span>
+        <span><b>◆</b> FEE <b>—</b></span>
+        <span><b>◆</b> FLOOR <b>—</b></span>
       </div>
     </div>
+  </div>
 
-    <!-- ═══ STATION 00 — ENTRANCE ═══ -->
-    <section class="station" id="station-entrance">
-      <div class="station-grid">
-        <div class="station-text">
-          <div class="station-label">STATION 00 — THE ENTRANCE</div>
-          <h1 class="hero-title">THE FEE-SHARE<br><span class="accent">METROPOLIS</span></h1>
-          <p class="hero-sub">
-            A city on Robinhood Chain. Every trade of $SBCITY pays its holders in ETH.
-            444 city shares. No dilution. Just fees, split fairly.
-          </p>
-          <div class="btn-group">
-            <a class="btn btn-buy" href="https://www.ponsfamily.com/launchpad/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">BUY $SBCITY ▸</a>
-            <button class="ca-chip" data-ca="0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" title="Copy contract address">
-              <span class="ca-label">CA</span>
-              <span class="ca-hash">0xf87b…e9b1</span>
-              <span class="ca-copy">COPY</span>
-            </button>
-          </div>
-        </div>
-        <div class="station-visual" id="city3d-wrap">
-          <canvas id="city3d"></canvas>
-          <div class="city3d-hud" id="city3d-hud">
-            <span>SBCITY // LIVE</span>
-          </div>
-        </div>
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="masthead-brand">
+      <div class="masthead-logo">SBCITY <span>//</span></div>
+      <div>
+        <div class="masthead-tag">BROKER WORKSTATION // ROBINHOOD CHAIN</div>
       </div>
-    </section>
-
-    <!-- ═══ STATION 01 — THE FLEET ═══ -->
-    <section class="station" id="station-fleet">
-      <div class="station-grid">
-        <div class="station-visual" style="background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
-          <div style="font-family:var(--font-px);font-size:64px;color:var(--acid);line-height:1">444</div>
-          <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em">CITY SHARES</div>
-          <div style="font-size:11px;color:var(--muted);max-width:280px;text-align:center;line-height:1.5">500,000 $SBCITY BURN PER MINT · COMMIT-REVEAL</div>
-        </div>
-        <div class="station-text">
-          <div class="station-label">STATION 01 — THE FLEET</div>
-          <h2 class="station-title">444 CITY SHARES</h2>
-          <p class="station-desc">
-            <strong>444 NFTs</strong> — one for every building in the skyline. Each is minted by burning <strong>500,000 $SBCITY</strong> via a fair commit-reveal draw.
-          </p>
-          <p class="station-desc">
-            No sniping. No private lookups. The entropy is sealed one block after your commit — nobody, including us, can pick their result.
-          </p>
-          <p class="station-desc">
-            Every NFT earns <strong>90% of the NFTPool fee share</strong> — paid in ETH, auto-pushed to your wallet.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══ STATION 02 — THE FEE SHARE ═══ -->
-    <section class="station" id="station-fee">
-      <div class="station-grid">
-        <div class="station-text">
-          <div class="station-label">STATION 02 — THE FEE SHARE</div>
-          <h2 class="station-title">DUAL-POOL FEE SHARE</h2>
-          <p class="station-desc">
-            Every trade of $SBCITY generates ETH fees. Those fees enter the city treasury and are split <strong>two ways</strong>:
-          </p>
-          <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
-            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:4px">
-              <div style="width:32px;height:32px;border-radius:50%;background:rgba(0,200,5,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <span style="font-size:14px;color:var(--green)">₿</span>
-              </div>
-              <div>
-                <div style="font-size:12px;font-weight:500">TOKEN POOL</div>
-                <div style="font-size:11px;color:var(--muted)">70% to $SBCITY holders · 30% platform</div>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:4px">
-              <div style="width:32px;height:32px;border-radius:50%;background:rgba(196,242,38,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <span style="font-size:14px;color:var(--acid)">🏢</span>
-              </div>
-              <div>
-                <div style="font-size:12px;font-weight:500">NFT POOL</div>
-                <div style="font-size:11px;color:var(--muted)">90% to NFT holders · 10% platform</div>
-              </div>
-            </div>
-          </div>
-          <p class="station-desc">
-            <strong>80% of every fee reaches holders.</strong> No inflation. No dilution. Real ETH from real trading.
-          </p>
-        </div>
-        <div class="station-visual" style="background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
-          <div style="text-align:center">
-            <div style="font-size:32px;color:var(--green);font-family:var(--font-px);margin-bottom:4px">50/50</div>
-            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em">Fee Split</div>
-          </div>
-          <div style="display:flex;gap:24px;text-align:center">
-            <div>
-              <div style="font-size:20px;color:var(--green);font-family:var(--font-px)">70%</div>
-              <div style="font-size:10px;color:var(--muted)">TOKEN HOLDERS</div>
-              <div style="font-size:9px;color:var(--muted)">30% platform</div>
-            </div>
-            <div style="width:1px;background:var(--line)"></div>
-            <div>
-              <div style="font-size:20px;color:var(--acid);font-family:var(--font-px)">90%</div>
-              <div style="font-size:10px;color:var(--muted)">NFT HOLDERS</div>
-              <div style="font-size:9px;color:var(--muted)">10% platform</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══ STATION 03 — THE MINT ═══ -->
-    <section class="station" id="station-mint">
-      <div class="station-grid">
-        <div class="station-visual" style="background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px">
-          <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
-            <div style="text-align:center;padding:12px;border:1px solid var(--line);border-radius:4px;min-width:80px">
-              <div style="font-size:24px;color:var(--acid);font-family:var(--font-px)">1</div>
-              <div style="font-size:10px;color:var(--muted)">COMMIT</div>
-            </div>
-            <div style="display:flex;align-items:center;color:var(--muted);font-size:20px">→</div>
-            <div style="text-align:center;padding:12px;border:1px solid var(--line);border-radius:4px;min-width:80px">
-              <div style="font-size:24px;color:var(--green);font-family:var(--font-px)">🧊</div>
-              <div style="font-size:10px;color:var(--muted)">1 BLOCK</div>
-            </div>
-            <div style="display:flex;align-items:center;color:var(--muted);font-size:20px">→</div>
-            <div style="text-align:center;padding:12px;border:1px solid var(--line);border-radius:4px;min-width:80px">
-              <div style="font-size:24px;color:var(--acid);font-family:var(--font-px)">2</div>
-              <div style="font-size:10px;color:var(--muted)">REVEAL</div>
-            </div>
-          </div>
-          <div style="font-size:10px;color:var(--muted);text-align:center;max-width:300px;line-height:1.5">
-            TWO BLOCKS · NO PEEKING. commit seals the entropy of block N+1.
-          </div>
-        </div>
-        <div class="station-text">
-          <div class="station-label">STATION 03 — THE MINT</div>
-          <h2 class="station-title">TWO BLOCKS · NO PEEKING</h2>
-          <p class="station-desc">
-            Mint a city share via <strong>commit-reveal</strong>. Burn 500,000 $SBCITY, commit to the next block, then reveal to draw your NFT.
-          </p>
-          <p class="station-desc">
-            Your seed is pinned the moment you commit — a contract cannot look at the result and revert. The draw is <strong>deterministic and fair</strong>.
-          </p>
-          <p class="station-desc">
-            No limit per wallet. Unlimited recommits if your commit expires (240 blocks ~ 46 min).
-          </p>
-          <div class="btn-group" style="margin-top:16px">
-            <a class="btn btn-primary" href="https://www.ponsfamily.com/launchpad/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">BUY $SBCITY ▸</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══ STATION 04 — THE CONTRACTS ═══ -->
-    <section class="station" id="station-contracts">
-      <div class="station-grid">
-        <div class="station-text">
-          <div class="station-label">STATION 04 — THE CONTRACTS</div>
-          <h2 class="station-title">FOUR CONTRACTS · ONE CHAIN</h2>
-          <p class="station-desc">
-            Read them on <a href="https://robinhoodchain.blockscout.com/" target="_blank" rel="noopener" style="color:var(--green)">Blockscout</a>. Every contract is immutable where it matters.
-          </p>
-        </div>
-        <div>
-          <ul class="contract-list">
-            <li>
-              <span class="name">$SBCITY</span>
-              <span class="addr">0xf87b…e9b1</span>
-              <button class="copy-btn" data-ca="0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1">COPY</button>
-              <a href="https://robinhoodchain.blockscout.com/address/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener" style="color:var(--muted);font-size:11px;text-decoration:none">→</a>
-            </li>
-            <li>
-              <span class="name">SBCityNFT</span>
-              <span class="addr">—</span>
-              <span style="font-size:10px;color:var(--muted)">POST-DEPLOY</span>
-            </li>
-            <li>
-              <span class="name">Claim</span>
-              <span class="addr">—</span>
-              <span style="font-size:10px;color:var(--muted)">POST-DEPLOY</span>
-            </li>
-            <li>
-              <span class="name">Distributor</span>
-              <span class="addr">—</span>
-              <span style="font-size:10px;color:var(--muted)">POST-DEPLOY</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══ STATION 05 — THE FLOOR ═══ -->
-    <section class="station" id="station-floor">
-      <div class="station-grid">
-        <div class="station-visual" style="background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
-          <div style="font-family:var(--font-px);font-size:48px;color:var(--green);line-height:1">1B</div>
-          <div style="font-size:11px;color:var(--muted);text-transform:uppercase">$SBCITY SUPPLY</div>
-          <div style="display:flex;gap:20px;margin-top:8px;text-align:center">
-            <div><div style="font-size:14px;color:var(--paper);font-weight:500">18</div><div style="font-size:10px;color:var(--muted)">DECIMALS</div></div>
-            <div><div style="font-size:14px;color:var(--paper);font-weight:500">—</div><div style="font-size:10px;color:var(--muted)">PRICE</div></div>
-            <div><div style="font-size:14px;color:var(--paper);font-weight:500">—</div><div style="font-size:10px;color:var(--muted)">HOLDERS</div></div>
-          </div>
-        </div>
-        <div class="station-text">
-          <div class="station-label">STATION 05 — THE FLOOR</div>
-          <h2 class="station-title">TRADING FLOOR</h2>
-          <p class="station-desc">
-            $SBCITY trades on <strong>Ponsfamily</strong> — the Robinhood Chain launchpad. Liquidity is seeded by the treasury.
-          </p>
-          <p class="station-desc">
-            Every buy and sell generates a <strong>fee</strong> that flows to the city treasury and is split between token holders and NFT holders.
-          </p>
-          <div class="btn-group" style="margin-top:16px">
-            <a class="btn btn-buy" href="https://www.ponsfamily.com/launchpad/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">BUY $SBCITY ON PONS ▸</a>
-            <a class="btn btn-ghost" href="https://robinhoodchain.blockscout.com/address/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">BLOCKSCOUT →</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══ FOOTER ═══ -->
-    <div class="footer">
-      <div class="links">
-        <a href="https://www.ponsfamily.com/launchpad/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">BUY $SBCITY</a>
-        <a href="https://robinhoodchain.blockscout.com/address/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">BLOCKSCOUT</a>
-        <a href="https://x.com/" target="_blank" rel="noopener">X</a>
-      </div>
-      <div>STOCKBROKERCITY · Robinhood Chain 4663</div>
     </div>
+    <div class="masthead-status">
+      <div class="masthead-indicator">
+        <i></i> MARKET LIVE
+      </div>
+      <div class="masthead-session">SESSION 0001-S</div>
+      <button class="terminal-button" disabled>WALLET SOON</button>
+    </div>
+  </header>
 
-    <script>
-      // ── COPY CA ──
-      document.querySelectorAll('[data-ca]').forEach(function(el) {
-        el.addEventListener('click', async function(e) {
-          e.preventDefault();
-          var ca = el.dataset.ca;
-          try {
-            await navigator.clipboard.writeText(ca);
-            var copyEl = el.querySelector('.ca-copy, .copy-btn');
-            if (copyEl) {
-              var o = copyEl.textContent;
-              copyEl.textContent = 'COPIED';
-              copyEl.classList.add('ca-copy-success');
-              setTimeout(function() { copyEl.textContent = o; copyEl.classList.remove('ca-copy-success'); }, 1600);
-            }
-          } catch(err) {
-            alert('CA: ' + ca);
-          }
-        });
-      });
+  <!-- FUNCTION RAIL -->
+  <nav class="function-rail">
+    <a class="rail-link active" data-room="skyline" href="#"><span class="key">F1</span> SKYLINE</a>
+    <a class="rail-link" data-room="exchange" href="#"><span class="key">F2</span> EXCHANGE</a>
+    <a class="rail-link" data-room="floor" href="#"><span class="key">F3</span> FLOOR</a>
+    <a class="rail-link" data-room="mint" href="#"><span class="key">F4</span> MINT</a>
+    <a class="rail-link" data-room="holders" href="#"><span class="key">F5</span> HOLDERS</a>
+    <a class="rail-link" data-room="docs" href="#"><span class="key">F6</span> DOCS</a>
+    <a class="rail-link" data-room="pool" href="#"><span class="key">F7</span> POOL</a>
+    <div class="rail-feed"><i></i> LIVE // RH ONE</div>
+  </nav>
 
-      // ── WALLET CONNECT ──
-      var walletBtn = document.getElementById('wallet-btn');
-      if (walletBtn) {
-        walletBtn.addEventListener('click', async function() {
-          if (typeof window.ethereum !== 'undefined') {
-            try {
-              var accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-              if (accounts.length > 0) {
-                var addr = accounts[0].slice(0, 6) + '…' + accounts[0].slice(-4);
-                walletBtn.textContent = addr + ' · RH';
-                walletBtn.classList.add('connected');
-                // switch to RH 4663
-                try {
-                  await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x1237' }] });
-                } catch(e) {
-                  if (e.code === 4902) {
-                    await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '0x1237', chainName: 'Robinhood Chain', rpcUrls: ['https://rpc.mainnet.chain.robinhood.com'], nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 } }] });
-                  }
-                }
-              }
-            } catch(e) { console.log('wallet rejected', e); }
-          } else {
-            alert('Install MetaMask, Rabby, or Robinhood Wallet');
-          }
-        });
-      }
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
-      // ── STOCKBROKERCITY 3D CITY ──
-      (function () {
-        var wrap = document.getElementById('city3d-wrap');
-        var canvas = document.getElementById('city3d');
-        if (!wrap || !canvas) return;
-        function showErr(msg) {
-          var hud = document.getElementById('city3d-hud');
-          if (hud) hud.textContent = '3D ERROR: ' + msg;
-        }
+  <!-- ROOM VIEWPORT -->
+  <div class="room-viewport">
+    <div class="room-screen">
 
-        // renderer
-        var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.1;
-        // expose untuk debug (readPixels / screenshot)
-        window.__city3d = { renderer: renderer, getScene: function () { return scene; }, getCamera: function () { return camera; } };
+      <!-- ── F1: SKYLINE ── -->
+      <div class="room-panel active" id="room-skyline">
+        <div class="room-page">
 
-        // scene + fog
-        var scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x0b0e11);
-        scene.fog = new THREE.FogExp2(0x0b0e11, 0.008);
+          <div class="hero-section">
+            <div class="skyline">
+              <b style="--x:5%;--w:18px;--h:80px;--ant:6px;--aw:4px;--ah:3px;--sw:2px;--sh:10px"></b>
+              <b style="--x:14%;--w:12px;--h:50px;--ant:4px;--aw:3px;--ah:2px;--sw:1px;--sh:6px"></b>
+              <b style="--x:20%;--w:22px;--h:120px;--ant:8px;--aw:6px;--ah:4px;--sw:2px;--sh:14px"></b>
+              <b style="--x:34%;--w:15px;--h:65px;--ant:5px;--aw:4px;--ah:3px;--sw:2px;--sh:8px"></b>
+              <b style="--x:40%;--w:28px;--h:140px;--ant:10px;--aw:8px;--ah:5px;--sw:3px;--sh:16px"></b>
+              <b style="--x:56%;--w:10px;--h:40px;--ant:3px;--aw:3px;--ah:2px;--sw:1px;--sh:5px"></b>
+              <b style="--x:62%;--w:20px;--h:95px;--ant:7px;--aw:5px;--ah:3px;--sw:2px;--sh:12px"></b>
+              <b style="--x:75%;--w:16px;--h:70px;--ant:5px;--aw:4px;--ah:3px;--sw:2px;--sh:8px"></b>
+              <b style="--x:84%;--w:24px;--h:110px;--ant:8px;--aw:6px;--ah:4px;--sw:2px;--sh:12px"></b>
+              <b style="--x:94%;--w:14px;--h:55px;--ant:4px;--aw:3px;--ah:2px;--sw:1px;--sh:6px"></b>
+            </div>
+            <div class="hero-title">STOCK<em>BROKER</em>CITY</div>
+            <div class="hero-sub">THE STOCK DIVIDEND METROPOLIS // MINT NFTs WITH $SBCITY TOKEN</div>
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <span class="hero-stat-val">—</span>
+                <span class="hero-stat-label">SUPPLY</span>
+              </div>
+              <div class="hero-stat">
+                <span class="hero-stat-val">—</span>
+                <span class="hero-stat-label">MARKET CAP</span>
+              </div>
+              <div class="hero-stat">
+                <span class="hero-stat-val">—</span>
+                <span class="hero-stat-label">NFT MINTED</span>
+              </div>
+              <div class="hero-stat">
+                <span class="hero-stat-val">—</span>
+                <span class="hero-stat-label">HOLDERS</span>
+              </div>
+            </div>
+          </div>
 
-        // camera
-        var camera = new THREE.PerspectiveCamera(50, 1, 0.1, 300);
-        camera.position.set(0, 26, 42);
+          <div class="card-grid">
+            <div class="card">
+              <div class="card-header"><span>TOKEN</span><span class="badge">$SBCITY</span></div>
+              <div class="card-body">
+                <div class="card-value amber">—</div>
+                <div class="card-label">PRICE</div>
+                <div class="card-row"><span class="l">CONTRACT</span><span class="r">— SOON —</span></div>
+                <div class="card-row"><span class="l">SUPPLY</span><span class="r">—</span></div>
+                <div class="card-row"><span class="l">DECIMALS</span><span class="r">18</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span>NFT MINT</span><span class="badge">PRE-SALE</span></div>
+              <div class="card-body">
+                <div class="card-value green">COMING</div>
+                <div class="card-label">MINT WITH $SBCITY TOKEN</div>
+                <div class="card-row"><span class="l">PRICE</span><span class="r">—</span></div>
+                <div class="card-row"><span class="l">MAX SUPPLY</span><span class="r">—</span></div>
+                <div class="card-row"><span class="l">MINTED</span><span class="r">0</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span>DIVIDENDS</span><span class="badge">FEE SHARE</span></div>
+              <div class="card-body">
+                <div class="card-value">—</div>
+                <div class="card-label">ACCUMULATED</div>
+                <div class="card-row"><span class="l">FEE</span><span class="r">—</span></div>
+                <div class="card-row"><span class="l">HOLDERS</span><span class="r">—</span></div>
+                <div class="card-row"><span class="l">DISTRIBUTED</span><span class="r">—</span></div>
+              </div>
+            </div>
+          </div>
 
-        // ── lights ──
-        var ambient = new THREE.AmbientLight(0x405578, 1.4);
-        scene.add(ambient);
-        var moon = new THREE.DirectionalLight(0x9fb4ff, 0.6);
-        moon.position.set(-30, 50, -20);
-        scene.add(moon);
-        var greenGlow = new THREE.PointLight(0x00C805, 1.8, 70);
-        greenGlow.position.set(-8, 18, 12);
-        scene.add(greenGlow);
-        var acidGlow = new THREE.PointLight(0xc4f226, 1.3, 60);
-        acidGlow.position.set(14, 10, -10);
-        scene.add(acidGlow);
-        var warmGlow = new THREE.PointLight(0xff6a2a, 0.8, 50);
-        warmGlow.position.set(-16, 6, -18);
-        scene.add(warmGlow);
+        </div>
+      </div>
 
-        // ── ground ──
-        var ground = new THREE.Mesh(
-          new THREE.PlaneGeometry(160, 160),
-          new THREE.MeshStandardMaterial({ color: 0x151a24, roughness: 0.85, metalness: 0.15 })
-        );
-        ground.rotation.x = -Math.PI / 2;
-        ground.position.y = -0.05;
-        scene.add(ground);
+      <!-- ── F2: EXCHANGE ── -->
+      <div class="room-panel" id="room-exchange">
+        <div class="room-page">
+          <div class="card">
+            <div class="card-header"><span>EXCHANGE</span><span class="badge">$SBCITY</span></div>
+            <div class="card-body">
+              <div class="card-value amber">—</div>
+              <div class="card-label">TOKEN DATA COMING AT LAUNCH</div>
+              <div class="card-row"><span class="l">CONTRACT</span><span class="r">— SOON —</span></div>
+              <div class="card-row"><span class="l">CHAIN</span><span class="r">ROBINHOOD (4663)</span></div>
+              <div class="card-row"><span class="l">PLATFORM</span><span class="r">PONSFAMILY</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        // street grid (glow lines)
-        var gridMat = new THREE.LineBasicMaterial({ color: 0x00C805, transparent: true, opacity: 0.15 });
-        var gridGeo = new THREE.BufferGeometry();
-        var gridPts = [];
-        for (var g = -40; g <= 40; g += 8) {
-          gridPts.push(-40, 0.01, g, 40, 0.01, g);
-          gridPts.push(g, 0.01, -40, g, 0.01, 40);
-        }
-        gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(gridPts, 3));
-        scene.add(new THREE.LineSegments(gridGeo, gridMat));
+      <!-- ── F3: FLOOR ── -->
+      <div class="room-panel" id="room-floor">
+        <div class="room-page">
+          <div class="card">
+            <div class="card-header"><span>TRADING FLOOR</span><span class="badge">LIVE</span></div>
+            <div class="card-body">
+              <div class="card-value green">—</div>
+              <div class="card-label">TRADING DATA COMING AT LAUNCH</div>
+              <div style="margin-top:8px;font-size:7px;color:var(--muted);font-weight:400;line-height:1.6">
+                The StockBrokerCity trading floor monitors all $SBCITY activity in real-time.
+                Volume, trades, buys, sells — every transaction visible on-chain.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        // ── window texture generator ──
-        function makeWindowTexture(cols, rows, litRatio, accent) {
-          var c = document.createElement('canvas');
-          c.width = 64; c.height = 128;
-          var ctx = c.getContext('2d');
-          ctx.fillStyle = '#05070a';
-          ctx.fillRect(0, 0, 64, 128);
-          var cw = 64 / cols, ch = 128 / rows;
-          var colors = accent || ['#c4f226', '#00C805', '#ffffff', '#22d3ee'];
-          for (var y = 0; y < rows; y++) {
-            for (var x = 0; x < cols; x++) {
-              if (Math.random() > litRatio) continue;
-              ctx.fillStyle = colors[(Math.random() * colors.length) | 0];
-              ctx.globalAlpha = 0.6 + Math.random() * 0.4;
-              ctx.fillRect(x * cw + 4, y * ch + 4, cw - 8, ch - 8);
-            }
-          }
-          ctx.globalAlpha = 1;
-          var tex = new THREE.CanvasTexture(c);
-          tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-          return tex;
-        }
+      <!-- ── F4: MINT ── -->
+      <div class="room-panel" id="room-mint">
+        <div class="room-page">
+          <div class="mint-hero">
+            <div class="mint-hero-title">STOCKBROKERCITY // MINT</div>
+            <div class="mint-hero-sub">
+              Mint your StockBrokerCity NFT using $SBCITY token. Each NFT represents
+              a share in the city — entitling holders to fee dividends, governance rights,
+              and exclusive access to the StockBroker ecosystem.
+            </div>
+          </div>
 
-        // ── buildings ──
-        var buildings = [];
-        var materials = [];
-        var BLDG_COUNT = 90;
-        var CITY_R = 36;
+          <div class="mint-step-grid">
+            <div class="mint-step">
+              <span class="mint-step-num">01</span>
+              <span class="mint-step-label">ACQUIRE $SBCITY</span>
+              <span class="mint-step-desc">Buy $SBCITY tokens on Ponsfamily launchpad once launched</span>
+            </div>
+            <div class="mint-step">
+              <span class="mint-step-num">02</span>
+              <span class="mint-step-label">CONNECT WALLET</span>
+              <span class="mint-step-desc">Connect your Robinhood Chain wallet to mint your NFT</span>
+            </div>
+            <div class="mint-step">
+              <span class="mint-step-num">03</span>
+              <span class="mint-step-label">MINT NFT</span>
+              <span class="mint-step-desc">Pay with $SBCITY tokens &amp; receive your unique city NFT</span>
+            </div>
+          </div>
 
-        function randomBuilding() {
-          var w = 1.2 + Math.random() * 1.8;
-          var d = 1.2 + Math.random() * 1.8;
-          var h = 2 + Math.pow(Math.random(), 1.6) * 16; // bias pendek, sesekali tinggi
-          return { w: w, d: d, h: h };
-        }
+          <div class="mint-card">
+            <div class="mint-header">
+              <span class="mint-title">MINT YOUR CITY NFT</span>
+              <span class="mint-badge">COMING SOON</span>
+            </div>
+            <div class="mint-preview">
+              <div class="mint-frame">
+                <svg viewBox="0 0 60 60" fill="none">
+                  <rect width="60" height="60" fill="rgba(0,200,5,0.05)" rx="4"/>
+                  <rect x="10" y="25" width="8" height="25" fill="rgba(0,200,5,0.3)" rx="1"/>
+                  <rect x="20" y="15" width="12" height="35" fill="rgba(0,200,5,0.4)" rx="1"/>
+                  <rect x="34" y="20" width="10" height="30" fill="rgba(0,200,5,0.35)" rx="1"/>
+                  <rect x="46" y="28" width="6" height="22" fill="rgba(0,200,5,0.25)" rx="1"/>
+                  <rect x="22" y="18" width="3" height="4" fill="rgba(0,200,5,0.5)" rx="0.5"/>
+                  <rect x="27" y="18" width="3" height="4" fill="rgba(0,200,5,0.5)" rx="0.5"/>
+                  <rect x="36" y="23" width="3" height="4" fill="rgba(0,200,5,0.5)" rx="0.5"/>
+                  <rect x="41" y="23" width="3" height="4" fill="rgba(0,200,5,0.5)" rx="0.5"/>
+                  <rect x="12" y="28" width="2" height="3" fill="rgba(0,200,5,0.5)" rx="0.5"/>
+                  <rect x="15" y="28" width="2" height="3" fill="rgba(0,200,5,0.5)" rx="0.5"/>
+                  <text x="30" y="52" text-anchor="middle" fill="rgba(0,200,5,0.4)" font-size="6" font-family="monospace">SBCITY</text>
+                </svg>
+              </div>
+              <div class="mint-info">
+                <div class="mint-info-row">
+                  <span class="mint-info-label">PRICE</span>
+                  <span class="mint-info-val">—</span>
+                </div>
+                <div class="mint-info-row">
+                  <span class="mint-info-label">REMAINING</span>
+                  <span class="mint-info-val">—</span>
+                </div>
+                <div class="mint-info-row">
+                  <span class="mint-info-label">YOUR BALANCE</span>
+                  <span class="mint-info-val">—</span>
+                </div>
+                <div style="margin-top:4px">
+                  <span class="mint-info-label">MINT PROGRESS</span>
+                  <div class="mint-progress"><div class="mint-progress-bar" style="width:0%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        // 4 tipe jendela
-        var winTexs = [
-          makeWindowTexture(4, 8, 0.35, ['#c4f226', '#00C805']),
-          makeWindowTexture(3, 6, 0.5, ['#ffffff', '#22d3ee', '#c4f226']),
-          makeWindowTexture(5, 10, 0.25, ['#00C805', '#ffffff']),
-          makeWindowTexture(4, 8, 0.45, ['#c4f226', '#ff4d00', '#ffffff'])
-        ];
+      <!-- ── F5: HOLDERS ── -->
+      <div class="room-panel" id="room-holders">
+        <div class="room-page">
+          <div class="card">
+            <div class="card-header"><span>HOLDERS</span><span class="badge">$SBCITY</span></div>
+            <div class="card-body">
+              <div class="card-value green">—</div>
+              <div class="card-label">HOLDER DATA COMING AT LAUNCH</div>
+              <div style="margin-top:8px;font-size:7px;color:var(--muted);font-weight:400;line-height:1.6">
+                Top holders, distribution, and holder activity will be visible here once
+                the $SBCITY token is deployed on Robinhood Chain.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        for (var i = 0; i < BLDG_COUNT; i++) {
-          var b = randomBuilding();
-          var tex = winTexs[i % winTexs.length].clone();
-          tex.needsUpdate = true;
-          // repeat texture sesuai ukuran gedung (jendela proporsional)
-          tex.repeat.set(Math.max(1, Math.round(b.w * 3)), Math.max(1, Math.round(b.h * 1.6)));
-          var mat = new THREE.MeshStandardMaterial({
-            color: 0x3a4a60,
-            roughness: 0.4,
-            metalness: 0.5,
-            emissive: 0xffffff,
-            emissiveMap: tex,
-            emissiveIntensity: 2.2
-          });
-          materials.push(mat);
-          var mesh = new THREE.Mesh(new THREE.BoxGeometry(b.w, b.h, b.d), mat);
-          var angle = Math.random() * Math.PI * 2;
-          var r = Math.sqrt(Math.random()) * CITY_R;
-          mesh.position.set(Math.cos(angle) * r, b.h / 2, Math.sin(angle) * r);
-          mesh.rotation.y = Math.random() * Math.PI;
-          scene.add(mesh);
-          mesh.userData.h = b.h;
-          buildings.push(mesh);
+      <!-- ── F6: DOCS ── -->
+      <div class="room-panel" id="room-docs">
+        <div class="room-page">
+          <div class="mint-hero">
+            <div class="mint-hero-title">STOCKBROKERCITY // DOCS</div>
+            <div class="mint-hero-sub">THE STOCK DIVIDEND METROPOLIS ON ROBINHOOD CHAIN</div>
+          </div>
+          <div class="card-grid">
+            <div class="card">
+              <div class="card-header"><span>MECHANISM</span></div>
+              <div class="card-body" style="font-size:7px;font-weight:400;color:var(--muted);line-height:1.7;gap:6px">
+                <div><b style="color:var(--green)">01</b> Trade $SBCITY generates fees (1-3%)</div>
+                <div><b style="color:var(--green)">02</b> Fee pool accumulates in the city treasury</div>
+                <div><b style="color:var(--green)">03</b> Treasury buys back $SBCITY / distributes to NFT holders</div>
+                <div><b style="color:var(--green)">04</b> NFT holders receive dividends automatically</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span>SUPPLY</span></div>
+              <div class="card-body" style="font-size:7px;font-weight:400;color:var(--muted);line-height:1.7;gap:6px">
+                <div class="card-row"><span class="l">TOKEN</span><span class="r">$SBCITY</span></div>
+                <div class="card-row"><span class="l">NFT COLLECTION</span><span class="r">STOCKBROKERCITY</span></div>
+                <div class="card-row"><span class="l">CHAIN</span><span class="r">ROBINHOOD (4663)</span></div>
+                <div style="margin-top:4px;color:var(--muted)">
+                  Full documentation and whitepaper published at launch.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          // spire/antenna di gedung tinggi
-          if (b.h > 10) {
-            var spire = new THREE.Mesh(
-              new THREE.CylinderGeometry(0.06, 0.12, 1.4, 6),
-              new THREE.MeshStandardMaterial({ color: 0x22262c, emissive: 0x00C805, emissiveIntensity: 0.5 })
-            );
-            spire.position.set(mesh.position.x, b.h + 0.7, mesh.position.z);
-            scene.add(spire);
-          }
-        }
+      <!-- ── F7: POOL ── -->
+      <div class="room-panel" id="room-pool">
+        <div class="room-page">
+          <div class="card">
+            <div class="card-header"><span>LIQUIDITY POOL</span><span class="badge">SOON</span></div>
+            <div class="card-body">
+              <div class="card-value green">—</div>
+              <div class="card-label">POOL DATA COMING AT LAUNCH</div>
+              <div style="margin-top:8px;font-size:7px;color:var(--muted);font-weight:400;line-height:1.6">
+                The StockBrokerCity liquidity pool powers all trading on Ponsfamily.
+                Fee distribution, pool composition, and locking status displayed here.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        // ── billboard neon ──
-        var billTexts = ['BUY', 'HOLD', 'MINT', 'SBCITY', 'FEE SHARE'];
-        function makeBillboard(text, color) {
-          var c = document.createElement('canvas');
-          c.width = 256; c.height = 96;
-          var ctx = c.getContext('2d');
-          ctx.fillStyle = '#0b0e11';
-          ctx.fillRect(0, 0, 256, 96);
-          ctx.strokeStyle = color; ctx.lineWidth = 6;
-          ctx.strokeRect(6, 6, 244, 84);
-          ctx.fillStyle = color;
-          ctx.font = '700 44px JetBrains Mono, monospace';
-          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-          ctx.fillText(text, 128, 52);
-          var tex = new THREE.CanvasTexture(c);
-          var mesh = new THREE.Mesh(
-            new THREE.PlaneGeometry(3.2, 1.2),
-            new THREE.MeshStandardMaterial({ map: tex, emissive: color, emissiveMap: tex, emissiveIntensity: 1.4, transparent: true })
-          );
-          return mesh;
-        }
-        var billColors = ['#c4f226', '#00C805', '#ff4d00', '#22d3ee', '#c4f226'];
-        for (var bi = 0; bi < billTexts.length; bi++) {
-          var bm = makeBillboard(billTexts[bi], billColors[bi]);
-          var host = buildings[(bi * 17 + 5) % buildings.length];
-          if (!host) continue;
-          var bh = host.userData.h || 8;
-          bm.position.set(host.position.x, bh + 1.6, host.position.z);
-          bm.rotation.y = Math.random() * Math.PI * 2;
-          scene.add(bm);
-        }
+    </div>
+  </div>
 
-        // ── resize ──
-        function resize() {
-          var w = wrap.clientWidth || 600;
-          var h = wrap.clientHeight || 500;
-          renderer.setSize(w, h, false);
-          camera.aspect = w / h;
-          camera.updateProjectionMatrix();
-        }
-        try { resize(); } catch (e) { showErr('resize: ' + e.message); }
-        if (typeof ResizeObserver !== 'undefined') {
-          try { new ResizeObserver(resize).observe(wrap); } catch (e) {}
-        }
-        window.addEventListener('resize', resize);
+  <!-- COMMAND LINE -->
+  <div class="command-line">
+    <span class="cmd-prompt">SBCITY$</span>
+    <input class="cmd-input" type="text" placeholder="type help for commands..." readonly disabled />
+    <span class="cmd-help">F1-F7 NAV // MINT: SOON</span>
+  </div>
 
-        // ── animate ──
-        var clock = new THREE.Clock();
-        var t = 0;
-        var frameCount = 0;
-        function animate() {
-          try {
-            requestAnimationFrame(animate);
-            var dt = clock.getDelta();
-            t += dt;
-            // orbit kamera halus
-            var a = t * 0.08;
-            var r = 40;
-            camera.position.x = Math.cos(a) * r;
-            camera.position.z = Math.sin(a) * r;
-            camera.position.y = 16 + Math.sin(t * 0.12) * 3;
-            camera.lookAt(0, 7, 0);
-            // pulsasi lampu
-            greenGlow.intensity = 1.0 + Math.sin(t * 1.4) * 0.3;
-            acidGlow.intensity = 0.7 + Math.sin(t * 2.1 + 1) * 0.25;
-            // twinkle jendela (emissiveIntensity global halus)
-            for (var i = 0; i < materials.length; i++) {
-              materials[i].emissiveIntensity = 1.5 + Math.sin(t * 3 + i * 1.7) * 0.25;
-            }
-            renderer.render(scene, camera);
-            frameCount++;
-            if (frameCount === 5) {
-              var hud = document.getElementById('city3d-hud');
-              if (hud) hud.textContent = 'SBCITY // LIVE · RENDERING';
-            }
-          } catch (e) {
-            showErr(e.message);
-          }
-        }
-        animate();
-      })();
-    </script>
-  </body>
+</div>
+
+<script>
+// ── Room navigation ──
+const rails = document.querySelectorAll('.rail-link');
+const panels = {
+  skyline: document.getElementById('room-skyline'),
+  exchange: document.getElementById('room-exchange'),
+  floor: document.getElementById('room-floor'),
+  mint: document.getElementById('room-mint'),
+  holders: document.getElementById('room-holders'),
+  docs: document.getElementById('room-docs'),
+  pool: document.getElementById('room-pool'),
+};
+
+rails.forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const room = link.dataset.room;
+    if (!room || !panels[room]) return;
+    rails.forEach(r => r.classList.remove('active'));
+    link.classList.add('active');
+    Object.values(panels).forEach(p => { if (p) p.classList.remove('active') });
+    panels[room].classList.add('active');
+  });
+});
+
+// Keyboard shortcuts F1-F7
+document.addEventListener('keydown', e => {
+  const fMap = {F1:'skyline',F2:'exchange',F3:'floor',F4:'mint',F5:'holders',F6:'docs',F7:'pool'};
+  const room = fMap[e.key];
+  if (room && panels[room]) {
+    e.preventDefault();
+    const target = document.querySelector(`.rail-link[data-room="${room}"]`);
+    if (target) target.click();
+  }
+});
+</script>
+</body>
 </html>
