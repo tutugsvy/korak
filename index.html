@@ -1,905 +1,568 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#00C805" />
-<link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
-<title>STOCKBROKERCITY // SBCITY</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
-<style>
-/* ── RESET ── */
-*,::before,::after{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%}
-body{
-  font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
-  font-size:15px;font-weight:500;
-  color:#fffdf5;background:#00C805;
-  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
-}
-a{color:inherit;text-decoration:none}
-input,button{font:inherit;color:inherit;background:0 0;border:0;outline:0}
-button{cursor:pointer}
-img{display:block;max-width:100%}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STOCKBROKERCITY — the fee-share metropolis</title>
+    <meta name="description" content="A fee-share metropolis on Robinhood Chain. 444 city shares. Trade $SBCITY, earn ETH from real fees. 70% to token holders, 90% to NFT holders." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2300C805' rx='4'/><text x='16' y='24' text-anchor='middle' font-family='monospace' font-size='20' font-weight='bold' fill='%230B0E11'>S</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --bg: #0b0e11;
+        --panel: #121316;
+        --line: #1e2025;
+        --muted: #6b7280;
+        --paper: #f2f4f8;
+        --acid: #c4f226;
+        --green: #00C805;
+        --orange: #FF4D00;
+        --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+        --font-px: 'Silkscreen', monospace;
+        --font-sans: system-ui, -apple-system, sans-serif;
+        --grid: 1120px;
+      }
+      html { scroll-behavior: smooth; }
+      body {
+        background: var(--bg);
+        color: var(--paper);
+        font-family: var(--font-mono);
+        font-size: 13px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      ::selection { background: var(--acid); color: var(--bg); }
 
-/* ── CSS VARS ── */
-:root{
-  --gh:#00C805;            /* robinhood green sky top */
-  --gm:#4ADE80;            /* green sky mid */
-  --gl:#B8F5C9;            /* green sky low */
-  --ink:#0b0e11;           /* deep black chrome */
-  --panel:rgba(11,14,17,.86);
-  --panel-soft:rgba(24,26,32,.72);
-  --line:rgba(255,253,245,.14);
-  --line-hot:rgba(196,242,38,.55);
-  --acid:#c4f226;          /* stockcity acid lime */
-  --acid-hi:#d9ff4d;
-  --green:#00C805;
-  --paper:#fffdf5;
-  --muted:#98a1ae;
-  --cyan:#22d3ee;
-  --amber:#ffc233;
-  --red:#f6465d;
-  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
-  --font-px:"Press Start 2P",var(--font-mono);
-  --font-num:VT323,var(--font-mono);
-}
+      /* ── LAYOUT ── */
+      .station {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 48px 24px;
+        position: relative;
+        overflow: hidden;
+      }
+      .station-grid {
+        max-width: var(--grid);
+        width: 100%;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 48px;
+        align-items: center;
+      }
+      .station-visual {
+        aspect-ratio: 1.176;
+        max-width: 70.56vh;
+        width: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .station-text { max-width: 46ch; }
+      .station-label {
+        font-family: var(--font-px);
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        color: var(--green);
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .station-title {
+        font-family: var(--font-px);
+        font-size: 28px;
+        line-height: 1.1;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+      }
+      .station-desc {
+        font-size: 13.5px;
+        color: var(--muted);
+        line-height: 1.625;
+        margin-bottom: 24px;
+      }
+      .station-desc strong { color: var(--paper); font-weight: 500; }
 
-/* ── CITY SKY BACKDROP (fixed, like stockcity.app) ── */
-.city-sky{
-  position:fixed;inset:0;z-index:0;overflow:hidden;
-  background:
-    radial-gradient(120% 60% at 78% 8%, rgba(255,255,255,.35), transparent 42%),
-    linear-gradient(180deg, var(--gh) 0%, var(--gm) 52%, var(--gl) 100%);
-}
-.sun{
-  position:absolute;top:7%;right:12%;width:min(18vw,170px);aspect-ratio:1;
-  border-radius:50%;
-  background:radial-gradient(circle at 42% 38%, #fffdf5 0%, #f4ffe0 34%, #e6ffb0 62%, rgba(230,255,176,0) 74%);
-  filter:drop-shadow(0 0 42px rgba(255,255,255,.55));
-  animation:sun-breathe 6s ease-in-out infinite;
-}
-@keyframes sun-breathe{0%,100%{transform:scale(1);opacity:.95}50%{transform:scale(1.04);opacity:1}}
-.cloud{
-  position:absolute;height:26px;border-radius:999px;opacity:.85;
-  background:linear-gradient(180deg,#ffffff, #e8ffe9);
-  filter:blur(1px);
-  animation:drift linear infinite;
-}
-.cloud::before,.cloud::after{
-  content:"";position:absolute;background:inherit;border-radius:999px;
-}
-.cloud::before{width:56%;height:170%;top:-60%;left:12%}
-.cloud::after{width:38%;height:130%;top:-40%;right:8%}
-.c1{top:16%;left:-14%;width:170px;animation-duration:64s}
-.c2{top:30%;left:-20%;width:120px;animation-duration:88s;opacity:.6}
-.c3{top:9%;left:-30%;width:210px;animation-duration:52s;opacity:.7}
-@keyframes drift{to{transform:translateX(135vw)}}
+      @media (max-width: 768px) {
+        .station-grid { grid-template-columns: 1fr; gap: 32px; }
+        .station-visual { max-width: 100%; aspect-ratio: 16/9; }
+        .station-title { font-size: 22px; }
+        .station { min-height: auto; padding: 64px 20px; }
+      }
 
-/* ── SKYLINE (CSS city, lit windows like stockcity) ── */
-.skyline{
-  position:absolute;left:0;right:0;bottom:0;height:56vh;z-index:2;
-  filter:drop-shadow(0 -8px 26px rgba(11,14,17,.18));
-  pointer-events:none;
-}
-.bldg{
-  position:absolute;bottom:0;
-  width:var(--w);height:var(--h);left:var(--x);
-  background:linear-gradient(180deg, #1a2038 0%, #141936 46%, #0b0e11 100%);
-  border-radius:2px 2px 0 0;
-}
-.bldg::before{ /* window grid */
-  content:"";position:absolute;inset:5px 4px;
-  background:
-    repeating-linear-gradient(90deg, transparent 0 7px, var(--win,#fffdf5) 7px 8px, transparent 8px 13px),
-    repeating-linear-gradient(0deg, transparent 0 9px, var(--win,#fffdf5) 9px 10px, transparent 10px 16px);
-  opacity:var(--win-a,.16);mix-blend-mode:screen;border-radius:1px;
-}
-.bldg::after{ /* antenna */
-  content:"";position:absolute;top:-12px;left:50%;transform:translateX(-50%);
-  width:3px;height:12px;background:#2a3157;
-}
-.bldg .roof{
-  position:absolute;top:-4px;left:50%;transform:translateX(-50%);
-  width:42%;height:4px;border-radius:1px;
-  background:linear-gradient(180deg,#2a3157,#1a2038);
-}
-.bldg.glow{ /* billboard building — acid glow */
-  box-shadow:inset 0 0 0 1px rgba(196,242,38,.12);
-}
-.bldg.glow::before{
-  --win:#c4f226;--win-a:.3;
-}
-.bldg .billboard{
-  position:absolute;top:18%;left:50%;transform:translateX(-50%);
-  width:var(--bw,64%);height:22px;
-  background:linear-gradient(180deg,#0b0e11,#161a22);
-  border:1px solid rgba(255,253,245,.25);
-  display:grid;place-items:center;
-  font-family:var(--font-px);font-size:8px;letter-spacing:.08em;
-  color:var(--acid);
-  text-shadow:0 0 12px rgba(196,242,38,.6);
-  white-space:nowrap;overflow:hidden;
-  box-shadow:0 0 18px rgba(196,242,38,.15);
-}
+      /* ── BUTTONS ── */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 500;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.15s;
+        background: transparent;
+        color: var(--paper);
+      }
+      .btn-primary {
+        background: var(--green);
+        color: var(--bg);
+        border-color: var(--green);
+        font-weight: 700;
+      }
+      .btn-primary:hover { background: #00e806; }
+      .btn-ghost { border-color: var(--line); }
+      .btn-ghost:hover { border-color: var(--muted); }
+      .btn-buy {
+        background: var(--orange);
+        color: #fff;
+        border-color: var(--orange);
+        font-weight: 700;
+      }
+      .btn-buy:hover { background: #ff6a2a; }
+      .btn-sm { padding: 6px 12px; font-size: 11px; }
+      .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
 
-/* ── TWINKLING CITY LIGHTS ── */
-.bldg .wink{ /* sparse bright windows blinking on/off */
-  position:absolute;inset:5px 4px;pointer-events:none;
-  mix-blend-mode:screen;opacity:0;
-  background:
-    repeating-linear-gradient(90deg, transparent 0 26px, var(--wc,#fffdf5) 26px 27px, transparent 27px 39px),
-    repeating-linear-gradient(0deg, transparent 0 31px, var(--wc,#fffdf5) 31px 32px, transparent 32px 47px);
-  background-position:var(--wpx,0px) var(--wpy,0px);
-  animation:wink1 var(--td,3s) linear infinite;
-  animation-delay:var(--tda,0s);
-}
-@keyframes wink1{0%,100%{opacity:0}10%{opacity:.9}24%{opacity:.12}38%{opacity:.75}52%{opacity:0}78%{opacity:.35}}
-@keyframes wink2{0%,100%{opacity:0}18%{opacity:.8}30%{opacity:0}44%{opacity:.5}60%{opacity:0}84%{opacity:.7}}
-@keyframes wink3{0%,100%{opacity:.15}12%{opacity:0}30%{opacity:.9}46%{opacity:.1}64%{opacity:.55}80%{opacity:0}}
-.bldg .wink.wk2{animation-name:wink2}
-.bldg .wink.wk3{animation-name:wink3}
+      /* ── CA CHIP ── */
+      .ca-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--muted);
+        transition: border-color 0.15s;
+      }
+      .ca-chip:hover { border-color: var(--green); }
+      .ca-chip .ca-label { color: var(--green); font-weight: 500; }
+      .ca-chip .ca-hash { color: var(--paper); }
+      .ca-chip .ca-copy { color: var(--muted); font-size: 10px; }
+      .ca-copy-success { color: var(--green) !important; }
 
-/* aircraft-warning beacon on antennas */
-.bldg .beacon{
-  position:absolute;top:-19px;left:50%;transform:translateX(-50%);
-  width:5px;height:5px;border-radius:50%;
-  background:#ff3355;
-  box-shadow:0 0 9px 2px rgba(255,51,85,.75);
-  animation:beacon var(--bd,2.4s) steps(1,end) infinite;
-  animation-delay:var(--bda,0s);
-}
-@keyframes beacon{0%,100%{opacity:1}50%{opacity:.05}}
+      /* ── CONTRACT LIST ── */
+      .contract-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+      .contract-list li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        font-size: 12px;
+      }
+      .contract-list .name { color: var(--paper); font-weight: 500; min-width: 100px; }
+      .contract-list .addr { color: var(--muted); font-family: var(--font-mono); }
+      .contract-list .copy-btn {
+        margin-left: auto;
+        background: none;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        padding: 2px 6px;
+        border-radius: 2px;
+      }
+      .contract-list .copy-btn:hover { color: var(--green); background: rgba(196,242,38,0.1); }
 
-/* billboard glow pulse */
-.bldg .billboard{animation:bill-pulse 4s ease-in-out infinite}
-@keyframes bill-pulse{0%,100%{box-shadow:0 0 14px rgba(196,242,38,.12)}50%{box-shadow:0 0 26px rgba(196,242,38,.4)}}
+      /* ── HERO ── */
+      #station-entrance {
+        padding-top: 80px;
+        background: linear-gradient(180deg, #0b0e11 0%, #121316 100%);
+      }
+      .hero-title {
+        font-family: var(--font-px);
+        font-size: 40px;
+        line-height: 1.1;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .hero-title .accent { color: var(--green); }
+      .hero-sub {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 32px;
+        max-width: 400px;
+      }
+      @media (max-width: 768px) {
+        .hero-title { font-size: 28px; }
+      }
 
-@media (prefers-reduced-motion:reduce){
-  .bldg .wink{animation:none;opacity:0}
-  .bldg .beacon{animation:none;opacity:0}
-  .bldg .billboard{animation:none}
-}
+      /* ── STATS BAR ── */
+      .stats-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 20px;
+        background: rgba(11,14,17,0.92);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
+        font-size: 11px;
+      }
+      .stats-bar .brand { font-family: var(--font-px); color: var(--acid); font-size: 14px; }
+      .stats-bar .chain { color: var(--green); }
+      .stats-bar .right { display: flex; align-items: center; gap: 16px; }
+      .stats-bar .right a { color: var(--muted); text-decoration: none; }
+      .stats-bar .right a:hover { color: var(--paper); }
+      #wallet-btn {
+        padding: 4px 12px;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: transparent;
+        color: var(--paper);
+        cursor: pointer;
+      }
+      #wallet-btn:hover { border-color: var(--green); }
+      #wallet-btn.connected { color: var(--green); border-color: var(--green); }
 
-/* ── TERMINAL SHELL ── */
-.terminal-shell{
-  position:relative;z-index:5;
-  display:grid;
-  grid-template-rows:36px 68px 46px minmax(0,1fr) 40px;
-  grid-template-columns:minmax(0,1fr);
-  width:100%;min-width:0;max-width:100%;
-  min-height:100vh;min-height:100svh;
-  max-height:100vh;max-height:100svh;
-  isolation:isolate;
-}
-.terminal-shell > *{min-width:0}
-.terminal-shell::after{ /* CRT scanline */
-  content:"";z-index:40;pointer-events:none;position:fixed;inset:0;
-  background-image:repeating-linear-gradient(#0000 0 3px, rgba(11,14,17,.05) 3px 4px);
-}
+      /* ── FOOTER ── */
+      .footer {
+        padding: 32px 24px;
+        border-top: 1px solid var(--line);
+        text-align: center;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .footer .links { display: flex; justify-content: center; gap: 20px; margin-bottom: 8px; }
+      .footer .links a { color: var(--muted); text-decoration: none; }
+      .footer .links a:hover { color: var(--paper); }
 
-/* ── TICKER ── */
-.market-strip{
-  border-bottom:1px solid var(--line-hot);
-  background:rgba(11,14,17,.92);
-  color:var(--paper);white-space:nowrap;overflow:hidden;
-  font-size:14px;font-weight:600;line-height:35px;
-}
-.ticker-track{width:max-content;animation:ticker 34s linear infinite;display:flex}
-.market-strip:hover .ticker-track{animation-play-state:paused}
-.ticker-copy{flex-shrink:0;gap:36px;padding-right:36px;display:flex}
-.ticker-copy span b{color:var(--acid);margin-right:9px}
-.ticker-copy span em{color:var(--green);font-style:normal}
-@keyframes ticker{to{transform:translate(-50%)}}
+      /* ── VISUAL PLACEHOLDER ── */
+      .visual-skyline { width: 100%; height: 100%; display: flex; align-items: flex-end; justify-content: center; padding: 10%; gap: 2%; }
+      .visual-skyline .bldg { background: var(--line); border-radius: 2px 2px 0 0; flex: 1; }
+      .visual-skyline .bldg:nth-child(1) { height: 40%; }
+      .visual-skyline .bldg:nth-child(2) { height: 65%; }
+      .visual-skyline .bldg:nth-child(3) { height: 50%; }
+      .visual-skyline .bldg:nth-child(4) { height: 75%; background: var(--green); }
+      .visual-skyline .bldg:nth-child(5) { height: 35%; }
+      .visual-skyline .bldg:nth-child(6) { height: 55%; }
+      .visual-skyline .bldg:nth-child(7) { height: 45%; }
+      .visual-skyline .bldg:nth-child(8) { height: 60%; }
+      .visual-skyline .bldg:nth-child(9) { height: 30%; }
+      .visual-skyline .bldg:nth-child(10) { height: 70%; background: var(--acid); }
+      .visual-skyline .bldg .window { width: 20%; height: 6%; margin: 8% auto 0; border-radius: 1px; background: rgba(196,242,38,0.4); }
+      .visual-skyline .bldg:nth-child(4) .window { background: rgba(0,200,5,0.6); }
+      .visual-skyline .bldg:nth-child(10) .window { background: rgba(196,242,38,0.6); }
+    </style>
+  </head>
+  <body>
 
-/* ── MASTHEAD ── */
-.masthead{
-  border-bottom:1px solid var(--line);
-  background:var(--panel-soft);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  justify-content:space-between;align-items:center;
-  padding:8px 18px;display:flex;gap:12px;
-  min-width:0;flex-wrap:wrap;
-}
-.masthead-brand{display:flex;align-items:center;gap:14px;min-width:0;flex:1 1 auto}
-.masthead-logo{
-  font-family:var(--font-px);
-  font-size:19px;letter-spacing:.02em;
-  color:var(--acid);
-  text-shadow:0 0 22px rgba(196,242,38,.4), 2px 2px 0 rgba(11,14,17,.6);
-  white-space:nowrap;
-}
-.masthead-logo span{color:var(--paper);opacity:.85;font-family:var(--font-mono);font-weight:400;font-size:13px}
-.masthead-logo-img{
-  height:34px;width:auto;display:block;flex-shrink:0;
-  border-radius:4px;
-  border:1px solid rgba(196,242,38,.3);
-  box-shadow:0 0 14px rgba(196,242,38,.2);
-}
-.masthead-tag{color:var(--muted);font-size:12px;letter-spacing:.1em;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.masthead-status{display:flex;align-items:center;gap:16px;flex-shrink:0;margin-left:auto}
-.masthead-indicator{display:flex;align-items:center;gap:8px;color:var(--acid);font-size:12px;letter-spacing:.08em;font-weight:700;white-space:nowrap}
-.masthead-indicator i{width:8px;height:8px;border-radius:50%;background:var(--acid);box-shadow:0 0 10px var(--acid);animation:pulse 1.8s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.masthead-session{color:var(--muted);font-size:12px;font-weight:400;white-space:nowrap}
-.terminal-button{
-  border:1px solid var(--acid);
-  background:rgba(196,242,38,.12);
-  min-height:34px;color:var(--paper);
-  letter-spacing:.08em;
-  justify-content:center;align-items:center;
-  padding:6px 14px;font-size:13px;font-weight:700;
-  transition:all .15s;white-space:nowrap;
-}
-.terminal-button:hover:not(:disabled){
-  background:var(--acid);color:var(--ink);
-  box-shadow:3px 3px 0 rgba(196,242,38,.4);
-  transform:translate(-2px,-2px);
-}
-.terminal-button:disabled{opacity:.5;cursor:not-allowed}
-.terminal-button.ok{border-color:var(--green);background:rgba(0,200,5,.14);color:var(--green)}
-.terminal-button.err{border-color:var(--red);background:rgba(246,70,93,.12);color:#ff8a97}
-.terminal-button.busy{opacity:.7;cursor:wait}
-.terminal-button.ok:hover:not(:disabled){background:rgba(0,200,5,.25);color:#d8ffe0;box-shadow:3px 3px 0 rgba(0,200,5,.3)}
-
-/* ── FUNCTION RAIL ── */
-.function-rail{
-  border-bottom:1px solid var(--line);
-  background:rgba(11,14,17,.72);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  align-items:stretch;gap:2px;min-width:0;
-  display:flex;overflow-x:auto;
-}
-.rail-link{
-  padding:0 18px;
-  display:flex;align-items:center;gap:9px;
-  font-size:13px;font-weight:700;letter-spacing:.08em;
-  color:var(--muted);white-space:nowrap;
-  border-bottom:3px solid transparent;
-  transition:all .15s;cursor:pointer;
-}
-.rail-link .key{color:var(--muted);font-weight:400;font-size:11px;font-family:var(--font-px)}
-.rail-link:hover{color:var(--paper);background:rgba(196,242,38,.06)}
-.rail-link.active{color:var(--acid);border-bottom-color:var(--acid);background:rgba(196,242,38,.1)}
-.rail-link.active .key{color:var(--acid)}
-.rail-feed{color:var(--muted);font-size:12px;margin-left:auto;padding:0 18px;display:flex;align-items:center;gap:8px}
-.rail-feed i{width:6px;height:6px;border-radius:50%;background:var(--acid);box-shadow:0 0 8px var(--acid);animation:pulse 1.5s infinite}
-
-/* ── ROOM VIEWPORT ── */
-.room-viewport{overflow:hidden;position:relative}
-.room-screen{height:100%;overflow:auto}
-.room-screen::-webkit-scrollbar{width:5px}
-.room-screen::-webkit-scrollbar-track{background:rgba(11,14,17,.4)}
-.room-screen::-webkit-scrollbar-thumb{background:rgba(196,242,38,.4)}
-
-/* ── ROOM PAGE ── */
-.room-page{padding:16px;min-height:100%;display:flex;flex-direction:column;gap:14px}
-.room-panel{display:none}
-.room-panel.active{
-  display:flex;flex-direction:column;gap:14px;padding:16px;min-height:100%;
-  width:100%;max-width:1320px;margin:0 auto;
-}
-
-/* ── HERO COVER BANNER (F1) ── */
-.hero-cover-wrap{
-  position:relative;width:100%;border-radius:8px;overflow:hidden;
-  border:1px solid var(--line);
-  box-shadow:0 0 30px rgba(0,200,5,.2);
-}
-.hero-cover{
-  width:100%;height:auto;display:block;min-height:0;
-}
-.hero-cover-wrap::after{ /* subtle bottom fade into room bg */
-  content:"";position:absolute;inset:auto 0 0 0;height:34%;
-  background:linear-gradient(180deg, transparent, rgba(11,14,17,.45));
-  pointer-events:none;
-}
-
-/* ── HERO (F1 skyline room: see-through over the city) ── */
-.hero-section{
-  position:relative;
-  background:linear-gradient(180deg, rgba(11,14,17,.55), rgba(11,14,17,.35));
-  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-  border:1px solid var(--line);
-  padding:28px 24px;
-  min-height:300px;
-  display:flex;flex-direction:column;justify-content:flex-end;
-  overflow:hidden;
-}
-.hero-section::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg, transparent 55%, rgba(11,14,17,.5) 100%);
-}
-.hero-title{
-  font-family:var(--font-px);
-  font-size:clamp(20px,3.6vw,42px);
-  line-height:1.3;letter-spacing:.03em;
-  color:var(--paper);
-  position:relative;z-index:2;
-  text-shadow:0 0 34px rgba(0,200,5,.35), 3px 3px 0 rgba(11,14,17,.55);
-  overflow-wrap:break-word;word-break:break-word;max-width:100%;
-}
-.hero-title em{color:var(--acid);font-style:normal}
-.hero-sub{
-  font-size:15px;font-weight:600;color:var(--paper);
-  letter-spacing:.1em;margin-top:12px;position:relative;z-index:2;
-  text-shadow:0 1px 0 rgba(11,14,17,.6);
-}
-.hero-stats{
-  display:flex;gap:36px;margin-top:20px;position:relative;z-index:2;flex-wrap:wrap;
-}
-.hero-stat{display:flex;flex-direction:column;gap:4px}
-.hero-stat-val{
-  font-family:var(--font-num);font-size:34px;line-height:1;
-  font-weight:400;color:var(--acid);
-  text-shadow:0 0 18px rgba(196,242,38,.35);
-}
-.hero-stat-label{font-size:12px;color:var(--muted);letter-spacing:.14em;font-weight:500;text-shadow:0 1px 0 rgba(11,14,17,.6)}
-
-/* ── HERO ACTIONS (BUY NOW + CA) ── */
-.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;position:relative;z-index:2}
-.btn{
-  display:inline-flex;align-items:center;gap:8px;
-  font-family:var(--font-px);font-size:11px;letter-spacing:.06em;
-  padding:12px 20px;border:1px solid var(--acid);color:var(--acid);
-  background:rgba(196,242,38,.08);cursor:pointer;transition:all .15s;
-  text-decoration:none;white-space:nowrap;
-}
-.btn:hover{background:var(--acid);color:var(--ink);box-shadow:3px 3px 0 rgba(196,242,38,.4);transform:translate(-2px,-2px)}
-.btn-buy{background:var(--green);border-color:var(--green);color:#04160a;font-weight:700}
-.btn-buy:hover{background:var(--acid);border-color:var(--acid)}
-.ca-chip{font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--paper)}
-.ca-label{color:var(--acid);font-weight:700;font-size:10px;font-family:var(--font-px)}
-.ca-copy{color:var(--muted);font-size:10px;font-family:var(--font-px)}
-.ca-chip:hover .ca-copy{color:var(--ink)}
-.ca-inline{display:inline-flex;align-items:center;gap:8px;min-width:0}
-.ca-inline a{color:var(--acid);font-weight:600;font-family:var(--font-mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mini-copy{font-size:9px;font-family:var(--font-px);color:var(--muted);border:1px solid var(--line);padding:2px 6px;cursor:pointer;background:transparent;letter-spacing:.05em}
-.mini-copy:hover{color:var(--acid);border-color:var(--acid)}
-
-/* ── CARDS ── */
-.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
-.card{
-  background:var(--panel);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border:1px solid var(--line);
-  border-top:2px solid var(--acid);
-  padding:16px 18px;
-  display:flex;flex-direction:column;gap:10px;
-  transition:transform .15s, box-shadow .15s;
-}
-.card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(11,14,17,.35)}
-.card-header{
-  display:flex;justify-content:space-between;align-items:center;
-  font-size:12px;letter-spacing:.12em;color:var(--muted);font-weight:600;
-}
-.card-header .badge{
-  font-size:11px;font-weight:700;padding:2px 8px;
-  color:var(--acid);letter-spacing:.1em;
-  border:1px solid rgba(196,242,38,.4);
-  background:rgba(196,242,38,.08);
-}
-.card-body{flex:1;display:flex;flex-direction:column;gap:8px}
-.card-value{
-  font-family:var(--font-num);font-size:36px;line-height:1;letter-spacing:.02em;color:var(--paper);
-}
-.card-value .green{color:var(--green)}
-.card-value .acid{color:var(--acid)}
-.card-value .cyan{color:var(--cyan)}
-.card-value .amber{color:var(--amber)}
-.card-label{font-size:12px;color:var(--muted);letter-spacing:.14em;font-weight:500}
-.card-row{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;border-bottom:1px solid rgba(255,253,245,.08);gap:10px}
-.card-row:last-child{border-bottom:0}
-.card-row .l{color:var(--muted);font-weight:400}
-.card-row .r{color:var(--paper);text-align:right}
-.card-note{font-size:13px;color:var(--muted);font-weight:400;line-height:1.7}
-.card-note b{color:var(--acid);font-weight:600}
-
-/* ── MINT ── */
-.mint-hero{
-  background:var(--panel);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border:1px solid var(--line);border-top:2px solid var(--acid);
-  padding:26px;text-align:center;
-  display:flex;flex-direction:column;align-items:center;gap:14px;
-}
-.mint-hero-title{font-family:var(--font-px);font-size:clamp(18px,3vw,28px);color:var(--acid);letter-spacing:.02em;line-height:1.4}
-.mint-hero-sub{font-size:15px;color:var(--muted);letter-spacing:.05em;max-width:560px;line-height:1.7;font-weight:400}
-.mint-step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.mint-step{
-  background:var(--panel);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border:1px solid var(--line);
-  padding:18px 14px;text-align:center;
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  transition:transform .15s, box-shadow .15s;
-}
-.mint-step:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(11,14,17,.35)}
-.mint-step-num{font-family:var(--font-num);font-size:40px;line-height:1;color:var(--acid);text-shadow:0 0 16px rgba(196,242,38,.35)}
-.mint-step-label{font-size:14px;font-weight:700;color:var(--paper);letter-spacing:.08em}
-.mint-step-desc{font-size:12px;color:var(--muted);letter-spacing:.04em;font-weight:400;line-height:1.6}
-.mint-card{
-  background:linear-gradient(135deg, rgba(11,14,17,.92), rgba(24,26,32,.85));
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border:1px solid rgba(196,242,38,.45);
-  padding:20px;
-  display:flex;flex-direction:column;gap:14px;
-  position:relative;overflow:hidden;
-}
-.mint-card::before{
-  content:'';position:absolute;top:-60%;right:-30%;
-  width:70%;height:130%;
-  background:radial-gradient(circle, rgba(196,242,38,.08), transparent 70%);
-  pointer-events:none;
-}
-.mint-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-.mint-title{font-size:16px;font-weight:700;letter-spacing:.1em;color:var(--acid)}
-.mint-badge{border:1px solid var(--acid);font-size:12px;padding:3px 10px;color:var(--acid);letter-spacing:.1em;font-weight:700}
-.mint-preview{display:flex;gap:20px;align-items:center;position:relative;z-index:1;flex-wrap:wrap}
-.mint-frame{
-  width:150px;height:150px;
-  border:1px solid rgba(196,242,38,.35);
-  background:linear-gradient(135deg, rgba(196,242,38,.1), rgba(0,200,5,.03));
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;overflow:hidden;
-}
-.mint-frame img.mint-art{width:100%;height:100%;object-fit:cover;display:block}
-.mint-frame svg{width:80px;height:80px}
-.mint-info{display:flex;flex-direction:column;gap:8px;flex:1;min-width:220px}
-.mint-info-row{display:flex;gap:12px;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,253,245,.08);padding:4px 0}
-.mint-info-label{font-size:12px;color:var(--muted);letter-spacing:.12em;font-weight:500}
-.mint-info-val{font-size:16px;color:var(--paper);font-weight:600}
-.mint-progress{height:8px;background:rgba(255,253,245,.1);border-radius:4px;overflow:hidden;margin-top:6px}
-.mint-progress-bar{height:100%;background:linear-gradient(90deg,var(--green),var(--acid));border-radius:4px;width:0%;transition:width .4s}
-
-/* ── COMMAND LINE ── */
-.command-line{
-  border-top:1px solid rgba(196,242,38,.45);
-  background:rgba(11,14,17,.94);
-  color:var(--paper);
-  align-items:center;gap:12px;
-  padding:0 16px;font-size:15px;font-weight:600;
-  display:flex;min-width:0;
-  position:sticky;bottom:0;z-index:10;
-}
-.cmd-prompt{color:var(--acid);font-weight:700;font-family:var(--font-px);font-size:12px;flex-shrink:0}
-.cmd-input{flex:1;min-width:0;background:0 0;border:0;color:var(--paper);font-size:15px;font-weight:500;padding:6px 0}
-.cmd-input::placeholder{color:rgba(255,253,245,.35);overflow:hidden;text-overflow:ellipsis}
-.cmd-help{color:var(--muted);font-size:12px;font-weight:400;margin-left:auto;white-space:nowrap;flex-shrink:0}
-
-/* ── RESPONSIVE ── */
-@media(max-width:720px){
-  .terminal-shell{grid-template-rows:34px 58px 42px minmax(0,1fr) 38px}
-  .hero-stats{gap:18px}
-  .mint-preview{flex-direction:column}
-  .mint-step-grid{grid-template-columns:1fr}
-  .card-grid{grid-template-columns:1fr}
-  .masthead-tag{display:none}
-  .masthead-session{display:none}
-  .rail-feed{display:none}
-  .room-page,.room-panel.active{padding:10px}
-  .masthead{padding:6px 10px;gap:8px;flex-wrap:nowrap}
-  .masthead-logo{font-size:15px}
-  .masthead-logo-img{height:30px;border-radius:4px}
-  .masthead-logo span{display:none}
-  .masthead-status{gap:8px}
-  .terminal-button{min-height:30px;padding:4px 10px;font-size:12px}
-  .market-strip{font-size:12px;line-height:33px}
-  .rail-link{padding:0 12px;font-size:12px}
-  .rail-link .key{font-size:9px}
-  .cmd-help{display:none}
-  .cmd-prompt{font-size:10px}
-  .hero-title{font-size:clamp(18px,4.8vw,30px)}
-  .hero-sub{font-size:12px;letter-spacing:.06em}
-  .hero-stat-val{font-size:26px}
-  .hero-section{padding:18px 14px;min-height:240px}
-  .card{padding:12px 12px}
-  .card-value{font-size:28px}
-  .mint-hero{padding:18px 14px}
-  .mint-step{padding:14px 10px}
-  .sun{top:6%;right:6%;width:110px}
-  .skyline{height:44vh}
-  .bldg .billboard{font-size:6px;height:16px}
-  .cloud{height:18px}
-}
-@media(max-width:380px){
-  .masthead-indicator{font-size:10px}
-  .terminal-button{padding:4px 8px;font-size:11px}
-  .masthead-logo{font-size:13px}
-  .masthead-logo-img{height:26px}
-}
-</style>
-</head>
-<body>
-
-<!-- CITY BACKDROP (stockcity.app style sky) -->
-<div class="city-sky" aria-hidden="true">
-  <div class="sun"></div>
-  <div class="cloud c1"></div>
-  <div class="cloud c2"></div>
-  <div class="cloud c3"></div>
-  <div class="skyline">
-    <div class="bldg" style="--x:0%;--w:56px;--h:34vh"><div class="roof"></div></div>
-    <div class="bldg" style="--x:6%;--w:84px;--h:48vh"><div class="roof"></div></div>
-    <div class="bldg glow" style="--x:13%;--w:70px;--h:38vh">
-      <div class="billboard" style="--bw:82%">SBCITY</div>
-    </div>
-    <div class="bldg" style="--x:19%;--w:44px;--h:26vh"><div class="roof"></div></div>
-    <div class="bldg" style="--x:23%;--w:96px;--h:56vh"><div class="roof"></div></div>
-    <div class="bldg glow" style="--x:31%;--w:66px;--h:42vh">
-      <div class="billboard" style="--bw:88%">BUY / HOLD</div>
-    </div>
-    <div class="bldg" style="--x:37%;--w:38px;--h:24vh"><div class="roof"></div></div>
-    <div class="bldg" style="--x:41%;--w:112px;--h:62vh">
-      <div class="billboard" style="--bw:70%;color:var(--green);border-color:rgba(0,200,5,.5)">MINT</div>
-    </div>
-    <div class="bldg" style="--x:49%;--w:54px;--h:36vh"><div class="roof"></div></div>
-    <div class="bldg" style="--x:54%;--w:78px;--h:50vh"><div class="roof"></div></div>
-    <div class="bldg glow" style="--x:61%;--w:62px;--h:30vh">
-      <div class="billboard" style="--bw:80%">$SBCITY</div>
-    </div>
-    <div class="bldg" style="--x:67%;--w:100px;--h:58vh"><div class="roof"></div></div>
-    <div class="bldg" style="--x:74%;--w:48px;--h:28vh"><div class="roof"></div></div>
-    <div class="bldg glow" style="--x:78%;--w:74px;--h:44vh">
-      <div class="billboard" style="--bw:76%">FEE SHARE</div>
-    </div>
-    <div class="bldg" style="--x:85%;--w:60px;--h:40vh"><div class="roof"></div></div>
-    <div class="bldg" style="--x:91%;--w:86px;--h:52vh"><div class="roof"></div></div>
-    <div class="bldg" style="--x:97%;--w:52px;--h:32vh"><div class="roof"></div></div>
-  </div>
-</div>
-
-<div class="terminal-shell">
-
-  <!-- TICKER -->
-  <div class="market-strip" tabindex="0">
-    <div class="ticker-track">
-      <div class="ticker-copy">
-        <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
-        <span><b>◆</b> TICKER <em>$SBCITY</em></span>
-        <span><b>◆</b> SUPPLY <em>—</em></span>
-        <span><b>◆</b> MINT <em>COMING SOON</em></span>
-        <span><b>◆</b> FEE <em>—</em></span>
-        <span><b>◆</b> FLOOR <em>—</em></span>
-        <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
-        <span><b>◆</b> TICKER <em>$SBCITY</em></span>
-        <span><b>◆</b> SUPPLY <em>—</em></span>
-        <span><b>◆</b> MINT <em>COMING SOON</em></span>
-        <span><b>◆</b> FEE <em>—</em></span>
-        <span><b>◆</b> FLOOR <em>—</em></span>
-      </div>
-      <div class="ticker-copy">
-        <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
-        <span><b>◆</b> TICKER <em>$SBCITY</em></span>
-        <span><b>◆</b> SUPPLY <em>—</em></span>
-        <span><b>◆</b> MINT <em>COMING SOON</em></span>
-        <span><b>◆</b> FEE <em>—</em></span>
-        <span><b>◆</b> FLOOR <em>—</em></span>
-        <span><b>◆</b> $STOCKBROKERCITY // ROBINHOOD CHAIN</span>
-        <span><b>◆</b> TICKER <em>$SBCITY</em></span>
-        <span><b>◆</b> SUPPLY <em>—</em></span>
-        <span><b>◆</b> MINT <em>COMING SOON</em></span>
-        <span><b>◆</b> FEE <em>—</em></span>
-        <span><b>◆</b> FLOOR <em>—</em></span>
+    <!-- ═══ STATS BAR ═══ -->
+    <div class="stats-bar">
+      <span class="brand">STOCKBROKERCITY</span>
+      <span class="chain">ROBINHOOD CHAIN 4663</span>
+      <div class="right">
+        <a href="https://www.ponsfamily.com/launchpad/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">BUY</a>
+        <a href="https://x.com/" target="_blank" rel="noopener">X</a>
+        <button id="wallet-btn">CONNECT WALLET</button>
       </div>
     </div>
-  </div>
 
-  <!-- MASTHEAD -->
-  <header class="masthead">
-    <div class="masthead-brand">
-      <img class="masthead-logo-img" src="assets/logo.jpg" alt="STOCKBROKERCITY">
-      <div>
-        <div class="masthead-tag">BROKER WORKSTATION // ROBINHOOD CHAIN</div>
-      </div>
-    </div>
-    <div class="masthead-status">
-      <div class="masthead-indicator"><i></i> MARKET LIVE</div>
-      <div class="masthead-session">SESSION 0001-S</div>
-      <button class="terminal-button" id="wallet-btn">CONNECT WALLET</button>
-    </div>
-  </header>
-
-  <!-- FUNCTION RAIL -->
-  <nav class="function-rail">
-    <a class="rail-link active" data-room="skyline" href="#"><span class="key">F1</span> SKYLINE</a>
-    <a class="rail-link" data-room="exchange" href="#"><span class="key">F2</span> EXCHANGE</a>
-    <a class="rail-link" data-room="floor" href="#"><span class="key">F3</span> FLOOR</a>
-    <a class="rail-link" data-room="mint" href="#"><span class="key">F4</span> MINT</a>
-    <a class="rail-link" data-room="holders" href="#"><span class="key">F5</span> HOLDERS</a>
-    <a class="rail-link" data-room="docs" href="#"><span class="key">F6</span> DOCS</a>
-    <a class="rail-link" data-room="pool" href="#"><span class="key">F7</span> POOL</a>
-    <div class="rail-feed"><i></i> LIVE // RH ONE</div>
-  </nav>
-
-  <!-- ROOM VIEWPORT -->
-  <div class="room-viewport">
-    <div class="room-screen">
-
-      <!-- ── F1: SKYLINE ── -->
-      <div class="room-panel active" id="room-skyline">
-        <div class="room-page">
-
-          <div class="hero-cover-wrap">
-            <img class="hero-cover" src="assets/cover.jpg" alt="STOCKBROKERCITY — THE FEE-SHARE METROPOLIS">
+    <!-- ═══ STATION 00 — ENTRANCE ═══ -->
+    <section class="station" id="station-entrance">
+      <div class="station-grid">
+        <div class="station-text">
+          <div class="station-label">STATION 00 — THE ENTRANCE</div>
+          <h1 class="hero-title">THE FEE-SHARE<br><span class="accent">METROPOLIS</span></h1>
+          <p class="hero-sub">
+            A city on Robinhood Chain. Every trade of $SBCITY pays its holders in ETH.
+            444 city shares. No dilution. Just fees, split fairly.
+          </p>
+          <div class="btn-group">
+            <a class="btn btn-buy" href="https://www.ponsfamily.com/launchpad/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">BUY $SBCITY ▸</a>
+            <button class="ca-chip" data-ca="0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" title="Copy contract address">
+              <span class="ca-label">CA</span>
+              <span class="ca-hash">0xf87b…e9b1</span>
+              <span class="ca-copy">COPY</span>
+            </button>
           </div>
-
-          <div class="hero-section">
-            <div class="hero-title">STOCK<em>BROKER</em>CITY</div>
-            <div class="hero-sub">THE FEE-SHARE METROPOLIS // TOKEN 70% · NFT 90% // MINT 444 NFTs</div>
-            <div class="hero-stats">
-              <div class="hero-stat">
-                <span class="hero-stat-val">—</span>
-                <span class="hero-stat-label">SUPPLY</span>
-              </div>
-              <div class="hero-stat">
-                <span class="hero-stat-val">—</span>
-                <span class="hero-stat-label">MARKET CAP</span>
-              </div>
-              <div class="hero-stat">
-                <span class="hero-stat-val">—</span>
-                <span class="hero-stat-label">NFT MINTED</span>
-              </div>
-              <div class="hero-stat">
-                <span class="hero-stat-val">—</span>
-                <span class="hero-stat-label">HOLDERS</span>
-              </div>
-            </div>
-            <div class="hero-actions">
-              <a class="btn btn-buy" href="https://www.ponsfamily.com/launchpad/" target="_blank" rel="noopener">BUY $SBCITY ON PONS ▸</a>
-              <button class="btn ca-chip" data-ca="0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" title="Copy contract address">
-                <span class="ca-label">CA</span>
-                <span class="ca-hash">0xf87b…e9b1</span>
-                <span class="ca-copy">COPY</span>
-              </button>
-            </div>
+        </div>
+        <div class="station-visual">
+          <div class="visual-skyline">
+            <div class="bldg"><div class="window"></div></div>
+            <div class="bldg"><div class="window"></div></div>
+            <div class="bldg"><div class="window"></div></div>
+            <div class="bldg"><div class="window"></div></div>
+            <div class="bldg"><div class="window"></div></div>
+            <div class="bldg"><div class="window"></div></div>
+            <div class="bldg"><div class="window"></div></div>
+            <div class="bldg"><div class="window"></div></div>
+            <div class="bldg"><div class="window"></div></div>
+            <div class="bldg"><div class="window"></div></div>
           </div>
-
-          <div class="card-grid">
-            <div class="card">
-              <div class="card-header"><span>TOKEN</span><span class="badge">$SBCITY</span></div>
-              <div class="card-body">
-                <div class="card-value amber">—</div>
-                <div class="card-label">PRICE</div>
-                <div class="card-row">
-                  <span class="l">CONTRACT</span>
-                  <span class="r ca-inline">
-                    <a href="https://robinhoodchain.blockscout.com/address/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">0xf87b…e9b1</a>
-                    <button class="mini-copy" data-ca="0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1">COPY</button>
-                  </span>
-                </div>
-                <div class="card-row"><span class="l">SUPPLY</span><span class="r">—</span></div>
-                <div class="card-row"><span class="l">DECIMALS</span><span class="r">18</span></div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header"><span>NFT MINT</span><span class="badge">90% FEE SHARE</span></div>
-              <div class="card-body">
-                <div class="card-value acid">444</div>
-                <div class="card-label">MAX SUPPLY // 500,000 $SBCITY BURN</div>
-                <div class="card-row"><span class="l">PRICE</span><span class="r">500,000 SBCITY</span></div>
-                <div class="card-row"><span class="l">HOLDER SPLIT</span><span class="r">90% / 10% PLATFORM</span></div>
-                <div class="card-row"><span class="l">MINTED</span><span class="r">0</span></div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header"><span>TOKEN HOLDER</span><span class="badge">70% FEE SHARE</span></div>
-              <div class="card-body">
-                <div class="card-value">—</div>
-                <div class="card-label">ACCUMULATED FEES</div>
-                <div class="card-row"><span class="l">HOLDER SPLIT</span><span class="r">70% / 30% PLATFORM</span></div>
-                <div class="card-row"><span class="l">FEE</span><span class="r">—</span></div>
-                <div class="card-row"><span class="l">HOLDERS</span><span class="r">—</span></div>
-                <div class="card-row"><span class="l">DISTRIBUTED</span><span class="r">—</span></div>
-              </div>
-            </div>
-          </div>
-
         </div>
       </div>
+    </section>
 
-      <!-- ── F2: EXCHANGE ── -->
-      <div class="room-panel" id="room-exchange">
-        <div class="room-page">
-          <div class="card">
-            <div class="card-header"><span>EXCHANGE</span><span class="badge">$SBCITY</span></div>
-            <div class="card-body">
-              <div class="card-value amber">—</div>
-              <div class="card-label">TOKEN DATA // BUY ON PONSFAMILY</div>
-              <div class="card-row">
-                <span class="l">CONTRACT</span>
-                <span class="r ca-inline">
-                  <a href="https://robinhoodchain.blockscout.com/address/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">0xf87b…e9b1</a>
-                  <button class="mini-copy" data-ca="0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1">COPY</button>
-                </span>
+    <!-- ═══ STATION 01 — THE FLEET ═══ -->
+    <section class="station" id="station-fleet">
+      <div class="station-grid">
+        <div class="station-visual" style="background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+          <div style="font-family:var(--font-px);font-size:64px;color:var(--acid);line-height:1">444</div>
+          <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em">CITY SHARES</div>
+          <div style="font-size:11px;color:var(--muted);max-width:280px;text-align:center;line-height:1.5">500,000 $SBCITY BURN PER MINT · COMMIT-REVEAL</div>
+        </div>
+        <div class="station-text">
+          <div class="station-label">STATION 01 — THE FLEET</div>
+          <h2 class="station-title">444 CITY SHARES</h2>
+          <p class="station-desc">
+            <strong>444 NFTs</strong> — one for every building in the skyline. Each is minted by burning <strong>500,000 $SBCITY</strong> via a fair commit-reveal draw.
+          </p>
+          <p class="station-desc">
+            No sniping. No private lookups. The entropy is sealed one block after your commit — nobody, including us, can pick their result.
+          </p>
+          <p class="station-desc">
+            Every NFT earns <strong>90% of the NFTPool fee share</strong> — paid in ETH, auto-pushed to your wallet.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ STATION 02 — THE FEE SHARE ═══ -->
+    <section class="station" id="station-fee">
+      <div class="station-grid">
+        <div class="station-text">
+          <div class="station-label">STATION 02 — THE FEE SHARE</div>
+          <h2 class="station-title">DUAL-POOL FEE SHARE</h2>
+          <p class="station-desc">
+            Every trade of $SBCITY generates ETH fees. Those fees enter the city treasury and are split <strong>two ways</strong>:
+          </p>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:4px">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(0,200,5,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <span style="font-size:14px;color:var(--green)">₿</span>
               </div>
-              <div class="card-row"><span class="l">CHAIN</span><span class="r">ROBINHOOD (4663)</span></div>
-              <div class="card-row"><span class="l">PLATFORM</span><span class="r">PONSFAMILY</span></div>
-              <div style="margin-top:10px">
-                <a class="btn btn-buy" href="https://www.ponsfamily.com/launchpad/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">BUY $SBCITY ▸</a>
+              <div>
+                <div style="font-size:12px;font-weight:500">TOKEN POOL</div>
+                <div style="font-size:11px;color:var(--muted)">70% to $SBCITY holders · 30% platform</div>
               </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:4px">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(196,242,38,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <span style="font-size:14px;color:var(--acid)">🏢</span>
+              </div>
+              <div>
+                <div style="font-size:12px;font-weight:500">NFT POOL</div>
+                <div style="font-size:11px;color:var(--muted)">90% to NFT holders · 10% platform</div>
+              </div>
+            </div>
+          </div>
+          <p class="station-desc">
+            <strong>80% of every fee reaches holders.</strong> No inflation. No dilution. Real ETH from real trading.
+          </p>
+        </div>
+        <div class="station-visual" style="background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+          <div style="text-align:center">
+            <div style="font-size:32px;color:var(--green);font-family:var(--font-px);margin-bottom:4px">50/50</div>
+            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em">Fee Split</div>
+          </div>
+          <div style="display:flex;gap:24px;text-align:center">
+            <div>
+              <div style="font-size:20px;color:var(--green);font-family:var(--font-px)">70%</div>
+              <div style="font-size:10px;color:var(--muted)">TOKEN HOLDERS</div>
+              <div style="font-size:9px;color:var(--muted)">30% platform</div>
+            </div>
+            <div style="width:1px;background:var(--line)"></div>
+            <div>
+              <div style="font-size:20px;color:var(--acid);font-family:var(--font-px)">90%</div>
+              <div style="font-size:10px;color:var(--muted)">NFT HOLDERS</div>
+              <div style="font-size:9px;color:var(--muted)">10% platform</div>
             </div>
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- ── F3: FLOOR ── -->
-      <div class="room-panel" id="room-floor">
-        <div class="room-page">
-          <div class="card">
-            <div class="card-header"><span>TRADING FLOOR</span><span class="badge">LIVE</span></div>
-            <div class="card-body">
-              <div class="card-value acid">—</div>
-              <div class="card-label">TRADING DATA COMING AT LAUNCH</div>
-              <div class="card-note" style="margin-top:6px">
-                The StockBrokerCity trading floor monitors all $SBCITY activity in real-time.
-                Volume, trades, buys, sells — every transaction visible on-chain.
-              </div>
+    <!-- ═══ STATION 03 — THE MINT ═══ -->
+    <section class="station" id="station-mint">
+      <div class="station-grid">
+        <div class="station-visual" style="background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px">
+          <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
+            <div style="text-align:center;padding:12px;border:1px solid var(--line);border-radius:4px;min-width:80px">
+              <div style="font-size:24px;color:var(--acid);font-family:var(--font-px)">1</div>
+              <div style="font-size:10px;color:var(--muted)">COMMIT</div>
             </div>
+            <div style="display:flex;align-items:center;color:var(--muted);font-size:20px">→</div>
+            <div style="text-align:center;padding:12px;border:1px solid var(--line);border-radius:4px;min-width:80px">
+              <div style="font-size:24px;color:var(--green);font-family:var(--font-px)">🧊</div>
+              <div style="font-size:10px;color:var(--muted)">1 BLOCK</div>
+            </div>
+            <div style="display:flex;align-items:center;color:var(--muted);font-size:20px">→</div>
+            <div style="text-align:center;padding:12px;border:1px solid var(--line);border-radius:4px;min-width:80px">
+              <div style="font-size:24px;color:var(--acid);font-family:var(--font-px)">2</div>
+              <div style="font-size:10px;color:var(--muted)">REVEAL</div>
+            </div>
+          </div>
+          <div style="font-size:10px;color:var(--muted);text-align:center;max-width:300px;line-height:1.5">
+            TWO BLOCKS · NO PEEKING. commit seals the entropy of block N+1.
+          </div>
+        </div>
+        <div class="station-text">
+          <div class="station-label">STATION 03 — THE MINT</div>
+          <h2 class="station-title">TWO BLOCKS · NO PEEKING</h2>
+          <p class="station-desc">
+            Mint a city share via <strong>commit-reveal</strong>. Burn 500,000 $SBCITY, commit to the next block, then reveal to draw your NFT.
+          </p>
+          <p class="station-desc">
+            Your seed is pinned the moment you commit — a contract cannot look at the result and revert. The draw is <strong>deterministic and fair</strong>.
+          </p>
+          <p class="station-desc">
+            No limit per wallet. Unlimited recommits if your commit expires (240 blocks ~ 46 min).
+          </p>
+          <div class="btn-group" style="margin-top:16px">
+            <a class="btn btn-primary" href="https://www.ponsfamily.com/launchpad/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">BUY $SBCITY ▸</a>
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- ── F4: MINT ── -->
-      <div class="room-panel" id="room-mint">
-        <div class="room-page">
-          <div class="mint-hero">
-            <div class="mint-hero-title">STOCKBROKERCITY // MINT</div>
-            <div class="mint-hero-sub">
-              Mint your StockBrokerCity NFT using $SBCITY token. Each NFT entitles
-              you to <strong>90% fee share</strong> (vs 70% for token-only holders), plus
-              exclusive access to the StockBroker ecosystem. Only 444 ever.
-            </div>
+    <!-- ═══ STATION 04 — THE CONTRACTS ═══ -->
+    <section class="station" id="station-contracts">
+      <div class="station-grid">
+        <div class="station-text">
+          <div class="station-label">STATION 04 — THE CONTRACTS</div>
+          <h2 class="station-title">FOUR CONTRACTS · ONE CHAIN</h2>
+          <p class="station-desc">
+            Read them on <a href="https://robinhoodchain.blockscout.com/" target="_blank" rel="noopener" style="color:var(--green)">Blockscout</a>. Every contract is immutable where it matters.
+          </p>
+        </div>
+        <div>
+          <ul class="contract-list">
+            <li>
+              <span class="name">$SBCITY</span>
+              <span class="addr">0xf87b…e9b1</span>
+              <button class="copy-btn" data-ca="0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1">COPY</button>
+              <a href="https://robinhoodchain.blockscout.com/address/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener" style="color:var(--muted);font-size:11px;text-decoration:none">→</a>
+            </li>
+            <li>
+              <span class="name">SBCityNFT</span>
+              <span class="addr">—</span>
+              <span style="font-size:10px;color:var(--muted)">POST-DEPLOY</span>
+            </li>
+            <li>
+              <span class="name">Claim</span>
+              <span class="addr">—</span>
+              <span style="font-size:10px;color:var(--muted)">POST-DEPLOY</span>
+            </li>
+            <li>
+              <span class="name">Distributor</span>
+              <span class="addr">—</span>
+              <span style="font-size:10px;color:var(--muted)">POST-DEPLOY</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ STATION 05 — THE FLOOR ═══ -->
+    <section class="station" id="station-floor">
+      <div class="station-grid">
+        <div class="station-visual" style="background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+          <div style="font-family:var(--font-px);font-size:48px;color:var(--green);line-height:1">1B</div>
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase">$SBCITY SUPPLY</div>
+          <div style="display:flex;gap:20px;margin-top:8px;text-align:center">
+            <div><div style="font-size:14px;color:var(--paper);font-weight:500">18</div><div style="font-size:10px;color:var(--muted)">DECIMALS</div></div>
+            <div><div style="font-size:14px;color:var(--paper);font-weight:500">—</div><div style="font-size:10px;color:var(--muted)">PRICE</div></div>
+            <div><div style="font-size:14px;color:var(--paper);font-weight:500">—</div><div style="font-size:10px;color:var(--muted)">HOLDERS</div></div>
           </div>
-
-          <div class="mint-step-grid">
-            <div class="mint-step">
-              <span class="mint-step-num">01</span>
-              <span class="mint-step-label">ACQUIRE $SBCITY</span>
-              <span class="mint-step-desc">Buy $SBCITY tokens on Ponsfamily launchpad once launched</span>
-            </div>
-            <div class="mint-step">
-              <span class="mint-step-num">02</span>
-              <span class="mint-step-label">CONNECT WALLET</span>
-              <span class="mint-step-desc">Connect your Robinhood Chain wallet to mint your NFT</span>
-            </div>
-            <div class="mint-step">
-              <span class="mint-step-num">03</span>
-              <span class="mint-step-label">MINT NFT</span>
-              <span class="mint-step-desc">Pay with $SBCITY tokens &amp; receive your unique city NFT</span>
-            </div>
-          </div>
-
-          <div class="mint-card">
-            <div class="mint-header">
-              <span class="mint-title">MINT YOUR CITY NFT</span>
-              <span class="mint-badge">COMING SOON</span>
-            </div>
-            <div class="mint-preview">
-              <div class="mint-frame">
-                <svg viewBox="0 0 60 60" fill="none">
-                  <rect width="60" height="60" fill="rgba(196,242,38,0.06)" rx="4"/>
-                  <rect x="10" y="25" width="8" height="25" fill="rgba(196,242,38,0.35)" rx="1"/>
-                  <rect x="20" y="15" width="12" height="35" fill="rgba(0,200,5,0.45)" rx="1"/>
-                  <rect x="34" y="20" width="10" height="30" fill="rgba(196,242,38,0.4)" rx="1"/>
-                  <rect x="46" y="28" width="6" height="22" fill="rgba(0,200,5,0.3)" rx="1"/>
-                  <rect x="22" y="18" width="3" height="4" fill="rgba(196,242,38,0.6)" rx="0.5"/>
-                  <rect x="27" y="18" width="3" height="4" fill="rgba(196,242,38,0.6)" rx="0.5"/>
-                  <rect x="36" y="23" width="3" height="4" fill="rgba(0,200,5,0.6)" rx="0.5"/>
-                  <rect x="41" y="23" width="3" height="4" fill="rgba(0,200,5,0.6)" rx="0.5"/>
-                  <rect x="12" y="28" width="2" height="3" fill="rgba(196,242,38,0.6)" rx="0.5"/>
-                  <rect x="15" y="28" width="2" height="3" fill="rgba(196,242,38,0.6)" rx="0.5"/>
-                  <text x="30" y="52" text-anchor="middle" fill="rgba(196,242,38,0.5)" font-size="6" font-family="monospace">? SBCITY</text>
-                </svg>
-              </div>
-              <div class="mint-info">
-                <div class="mint-info-row">
-                  <span class="mint-info-label">PRICE</span>
-                  <span class="mint-info-val">500,000 SBCITY</span>
-                </div>
-                <div class="mint-info-row">
-                  <span class="mint-info-label">REMAINING</span>
-                  <span class="mint-info-val">444</span>
-                </div>
-                <div class="mint-info-row">
-                  <span class="mint-info-label">YOUR BALANCE</span>
-                  <span class="mint-info-val">—</span>
-                </div>
-                <div style="margin-top:6px">
-                  <span class="mint-info-label">MINT PROGRESS</span>
-                  <div class="mint-progress"><div class="mint-progress-bar" style="width:0%"></div></div>
-                </div>
-              </div>
-            </div>
+        </div>
+        <div class="station-text">
+          <div class="station-label">STATION 05 — THE FLOOR</div>
+          <h2 class="station-title">TRADING FLOOR</h2>
+          <p class="station-desc">
+            $SBCITY trades on <strong>Ponsfamily</strong> — the Robinhood Chain launchpad. Liquidity is seeded by the treasury.
+          </p>
+          <p class="station-desc">
+            Every buy and sell generates a <strong>fee</strong> that flows to the city treasury and is split between token holders and NFT holders.
+          </p>
+          <div class="btn-group" style="margin-top:16px">
+            <a class="btn btn-buy" href="https://www.ponsfamily.com/launchpad/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">BUY $SBCITY ON PONS ▸</a>
+            <a class="btn btn-ghost" href="https://robinhoodchain.blockscout.com/address/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">BLOCKSCOUT →</a>
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- ── F5: HOLDERS ── -->
-      <div class="room-panel" id="room-holders">
-        <div class="room-page">
-          <div class="card">
-            <div class="card-header"><span>HOLDERS</span><span class="badge">$SBCITY</span></div>
-            <div class="card-body">
-              <div class="card-value acid">—</div>
-              <div class="card-label">HOLDER DATA COMING AT LAUNCH</div>
-              <div class="card-note" style="margin-top:6px">
-                Top holders, distribution, and holder activity will be visible here once
-                the $SBCITY token is deployed on Robinhood Chain.
-              </div>
-            </div>
-          </div>
-        </div>
+    <!-- ═══ FOOTER ═══ -->
+    <div class="footer">
+      <div class="links">
+        <a href="https://www.ponsfamily.com/launchpad/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">BUY $SBCITY</a>
+        <a href="https://robinhoodchain.blockscout.com/address/0xf87b2785fddaaa0c1e3ed5aef63aa2798b38e9b1" target="_blank" rel="noopener">BLOCKSCOUT</a>
+        <a href="https://x.com/" target="_blank" rel="noopener">X</a>
       </div>
-
-      <!-- ── F6: DOCS ── -->
-      <div class="room-panel" id="room-docs">
-        <div class="room-page">
-          <div class="mint-hero">
-            <div class="mint-hero-title">STOCKBROKERCITY // DOCS</div>
-            <div class="mint-hero-sub">THE FEE-SHARE METROPOLIS // TOKEN 70% · NFT 90%</div>
-          </div>
-          <div class="card-grid">
-            <div class="card">
-              <div class="card-header"><span>MECHANISM</span></div>
-              <div class="card-body card-note" style="gap:10px">
-                <div><b>01</b> Trade $SBCITY generates a <b>fee</b> on every swap</div>
-                <div><b>02</b> Fee split <b>50/50</b> into two pools — token &amp; NFT</div>
-                <div><b>03</b> Token pool → <b>70%</b> token holders / <b>30%</b> platform</div>
-                <div><b>04</b> NFT pool → <b>90%</b> NFT holders / <b>10%</b> platform</div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header"><span>SUPPLY</span></div>
-              <div class="card-body card-note" style="gap:10px">
-                <div class="card-row"><span class="l">TOKEN</span><span class="r">$SBCITY</span></div>
-                <div class="card-row"><span class="l">NFT COLLECTION</span><span class="r">STOCKBROKERCITY</span></div>
-                <div class="card-row"><span class="l">CHAIN</span><span class="r">ROBINHOOD (4663)</span></div>
-                <div style="margin-top:4px;color:var(--muted);font-size:13px">
-                  Full documentation and whitepaper published at launch.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── F7: POOL ── -->
-      <div class="room-panel" id="room-pool">
-        <div class="room-page">
-          <div class="card">
-            <div class="card-header"><span>LIQUIDITY POOL</span><span class="badge">SOON</span></div>
-            <div class="card-body">
-              <div class="card-value acid">—</div>
-              <div class="card-label">POOL DATA COMING AT LAUNCH</div>
-              <div class="card-note" style="margin-top:6px">
-                The StockBrokerCity liquidity pool powers all trading on Ponsfamily.
-                Fee distribution, pool composition, and locking status displayed here.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <div>STOCKBROKERCITY · Robinhood Chain 4663</div>
     </div>
-  </div>
 
-  <!-- COMMAND LINE -->
-  <div class="command-line">
-    <span class="cmd-prompt">SBCITY$</span>
-    <input class="cmd-input" type="text" placeholder="type help for commands..." readonly disabled />
-    <span class="cmd-help">F1-F7 NAV // MINT: SOON</span>
-  </div>
+    <script>
+      // ── COPY CA ──
+      document.querySelectorAll('[data-ca]').forEach(function(el) {
+        el.addEventListener('click', async function(e) {
+          e.preventDefault();
+          var ca = el.dataset.ca;
+          try {
+            await navigator.clipboard.writeText(ca);
+            var copyEl = el.querySelector('.ca-copy, .copy-btn');
+            if (copyEl) {
+              var o = copyEl.textContent;
+              copyEl.textContent = 'COPIED';
+              copyEl.classList.add('ca-copy-success');
+              setTimeout(function() { copyEl.textContent = o; copyEl.classList.remove('ca-copy-success'); }, 1600);
+            }
+          } catch(err) {
+            alert('CA: ' + ca);
+          }
+        });
+      });
 
-</div>
-
-<!-- modules: 22622_wkkjask55933 / 39814_klmnpqvs73018 / 55107_bcdfgqrt41295 / 88326_jklnpqsw62140 -->
-<script src="js/22622_wkkjask55933.js"></script>
-<script src="js/39814_klmnpqvs73018.js"></script>
-<script src="js/55107_bcdfgqrt41295.js"></script>
-<script src="js/88326_jklnpqsw62140.js"></script>
-
-</body>
+      // ── WALLET CONNECT ──
+      var walletBtn = document.getElementById('wallet-btn');
+      if (walletBtn) {
+        walletBtn.addEventListener('click', async function() {
+          if (typeof window.ethereum !== 'undefined') {
+            try {
+              var accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+              if (accounts.length > 0) {
+                var addr = accounts[0].slice(0, 6) + '…' + accounts[0].slice(-4);
+                walletBtn.textContent = addr + ' · RH';
+                walletBtn.classList.add('connected');
+                // switch to RH 4663
+                try {
+                  await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x1237' }] });
+                } catch(e) {
+                  if (e.code === 4902) {
+                    await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '0x1237', chainName: 'Robinhood Chain', rpcUrls: ['https://rpc.mainnet.chain.robinhood.com'], nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 } }] });
+                  }
+                }
+              }
+            } catch(e) { console.log('wallet rejected', e); }
+          } else {
+            alert('Install MetaMask, Rabby, or Robinhood Wallet');
+          }
+        });
+      }
+    </script>
+  </body>
 </html>
