@@ -586,10 +586,12 @@
         }
 
         // renderer
-        var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+        var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
         renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1.1;
+        // expose untuk debug (readPixels / screenshot)
+        window.__city3d = { renderer: renderer, getScene: function () { return scene; }, getCamera: function () { return camera; } };
 
         // scene + fog
         var scene = new THREE.Scene();
