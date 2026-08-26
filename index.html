@@ -232,6 +232,10 @@ img{display:block;max-width:100%}
   transform:translate(-2px,-2px);
 }
 .terminal-button:disabled{opacity:.5;cursor:not-allowed}
+.terminal-button.ok{border-color:var(--green);background:rgba(0,200,5,.14);color:var(--green)}
+.terminal-button.err{border-color:var(--red);background:rgba(246,70,93,.12);color:#ff8a97}
+.terminal-button.busy{opacity:.7;cursor:wait}
+.terminal-button.ok:hover:not(:disabled){background:rgba(0,200,5,.25);color:#d8ffe0;box-shadow:3px 3px 0 rgba(0,200,5,.3)}
 
 /* ── FUNCTION RAIL ── */
 .function-rail{
@@ -545,7 +549,7 @@ img{display:block;max-width:100%}
     <div class="masthead-status">
       <div class="masthead-indicator"><i></i> MARKET LIVE</div>
       <div class="masthead-session">SESSION 0001-S</div>
-      <button class="terminal-button" disabled>WALLET SOON</button>
+      <button class="terminal-button" id="wallet-btn">CONNECT WALLET</button>
     </div>
   </header>
 
@@ -850,7 +854,97 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// ── Twinkling city lights ──
+// ── Wallet connect + auto-switch to Robinhood Chain (4663) ──
+(function(){
+  const btn = document.getElementById('wallet-btn');
+  const ind = document.querySelector('.masthead-indicator');
+  if (!btn) return;
+  const RH = {
+    chainId: '0x1237', // 4663
+    chainName: 'Robinhood Chain',
+    nativeCurrency: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
+    rpcUrls: ['https://rpc.mainnet.chain.robinhood.com'],
+    blockExplorerUrls: ['https://robinhoodchain.blockscout.com']
+  };
+  const short = a => a ? a.slice(0,6) + '…' + a.slice(-4) : '';
+
+  function getProvider(){
+    if (window.ethereum) return window.ethereum;
+    if (window.phantom && window.phantom.ethereum) return window.phantom.ethereum;
+    if (window.rabby) return window.rabby;
+    return null;
+  }
+  function setBtn(text, mode){
+    btn.textContent = text;
+    btn.classList.remove('ok','err','busy');
+    if (mode) btn.classList.add(mode);
+  }
+  function setIndicator(html){ if (ind) ind.innerHTML = html; }
+
+  async function switchToRH(provider){
+    try {
+      await provider.request({ method:'wallet_switchEthereumChain', params:[{ chainId: RH.chainId }] });
+      return true;
+    } catch(e){
+      const code = e && (e.code || (e.data && e.data.originalError && e.data.originalError.code));
+      if (code === 4902){
+        await provider.request({ method:'wallet_addEthereumChain', params:[RH] });
+        await provider.request({ method:'wallet_switchEthereumChain', params:[{ chainId: RH.chainId }] });
+        return true;
+      }
+      throw e;
+    }
+  }
+
+  async function updateState(provider){
+    try {
+      const chainId = await provider.request({ method:'eth_chainId' });
+      const accounts = await provider.request({ method:'eth_accounts' });
+      const addr = accounts && accounts[0];
+      if (String(chainId).toLowerCase() !== RH.chainId){
+        setBtn('SWITCH TO RH', 'err');
+        setIndicator('<i style="background:#ff3355;box-shadow:0 0 10px #ff3355"></i> WRONG NETWORK');
+      } else if (addr){
+        setBtn(short(addr) + ' · RH', 'ok');
+        setIndicator('<i></i> CONNECTED');
+      } else {
+        setBtn('CONNECT WALLET', '');
+        setIndicator('<i></i> MARKET LIVE');
+      }
+    } catch(e){ /* wallet locked / not authorized — leave default */ }
+  }
+
+  async function connect(){
+    const provider = getProvider();
+    if (!provider){
+      alert('No wallet detected.\n\nInstall MetaMask, Phantom, Rabby or the Robinhood Wallet to connect to StockBrokerCity.');
+      return;
+    }
+    try {
+      setBtn('CONNECTING…', 'busy');
+      const accounts = await provider.request({ method:'eth_requestAccounts' });
+      if (!accounts || !accounts.length) throw Object.assign(new Error('No account'), { code: 4001 });
+      setIndicator('<i></i> CONNECTING');
+      await switchToRH(provider);
+      await updateState(provider);
+    } catch(e){
+      if (e && e.code === 4001){ setBtn('CONNECT WALLET',''); }
+      else { setBtn('CONNECT WALLET','err'); console.error('Wallet error', e); }
+    }
+  }
+
+  btn.addEventListener('click', connect);
+
+  // auto-detect existing connection without prompting
+  const provider = getProvider();
+  if (provider){
+    updateState(provider);
+    if (provider.on){
+      provider.on('accountsChanged', () => updateState(provider));
+      provider.on('chainChanged', () => setTimeout(() => updateState(provider), 300));
+    }
+  }
+})();
 (function(){
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const colors = ['#fffdf5','#c4f226','#22d3ee','#ffc233','#4ADE80','#ffd6e0'];
